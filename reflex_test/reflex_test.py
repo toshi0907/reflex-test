@@ -5,6 +5,16 @@ import reflex as rx
 from rxconfig import config
 
 
+class StateAddItem(rx.State):
+    item_name: str = ""
+
+    def update_item_name(self, item):
+        self.item_name = item
+
+    def clear_item_name(self):
+        self.item_name = ""
+
+
 class State(rx.State):
     """The app state."""
 
@@ -12,6 +22,9 @@ class State(rx.State):
 
     def remove_item(self, item):
         self.arr.remove(item)
+
+    def add_item(self, item):
+        self.arr.append(item)
 
 
 def CommonHeader(title: str) -> rx.Component:
@@ -36,12 +49,24 @@ def index() -> rx.Component:
     return rx.container(
         CommonHeader(title=""),
         rx.vstack(
+
+            rx.text(f"{StateAddItem.item_name}"),
+            rx.input(
+                value=StateAddItem.item_name,
+                on_change=StateAddItem.update_item_name,
+                placeholder="Type here to add to the list",
+            ),
+            rx.button(
+                "Clear",
+                on_click=StateAddItem.clear_item_name,
+            ),
             # rx.button("Click me"),
             # rx.link("Subpage", href="/subindex"),
-            rx.hstack(
-                rx.text("test1"),
-                rx.text("test2"),
-            ),
+            # rx.hstack(
+            #     rx.text("test1"),
+            #     rx.text("test2"),
+            #     border="1px solid black",
+            # ),
             # タスクリスト
             rx.foreach(
                 State.arr,
