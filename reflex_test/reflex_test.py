@@ -8,26 +8,52 @@ from rxconfig import config
 class State(rx.State):
     """The app state."""
 
+    arr = ["aaa", "bbb"]
+
+    def remove_item(self, item):
+        self.arr.remove(item)
+
+
+def CommonHeader(title: str) -> rx.Component:
+    """共通ヘッダ"""
+    title_disp = ""
+    if title == "":
+        title_disp = "TN App"
+    else:
+        title_disp = "TN App : " + title
+    return rx.vstack(
+        rx.heading(title_disp),
+        rx.hstack(
+            rx.link("index", href="/"),
+            rx.link("subpage", href="/subindex"),
+        ),
+        rx.divider(),
+    )
+
 
 def index() -> rx.Component:
-    # Welcome Page (Index)
+    # indexページ
     return rx.container(
-        rx.color_mode.button(position="top-right"),
+        CommonHeader(title=""),
         rx.vstack(
-            rx.heading("Welcome to Reflex!", size="9"),
-            rx.text(
-                "Get started by editing ",
-                rx.code(f"{config.app_name}/{config.app_name}.py"),
-                size="5",
-            ),
-            rx.link(
-                rx.button("Check out our docs!"),
-                href="https://reflex.dev/docs/getting-started/introduction/",
-                is_external=True,
-            ),
+            # rx.button("Click me"),
+            # rx.link("Subpage", href="/subindex"),
             rx.hstack(
                 rx.text("test1"),
                 rx.text("test2"),
+            ),
+            # タスクリスト
+            rx.foreach(
+                State.arr,
+                lambda item, index: rx.hstack(
+                    rx.text(
+                        item,
+                        width="50%",
+                    ),
+                    rx.button(
+                        "Button", width="50%", on_click=lambda: State.remove_item(item)
+                    ),
+                ),
             ),
             spacing="5",
             justify="center",
@@ -36,5 +62,21 @@ def index() -> rx.Component:
     )
 
 
+def subindex() -> rx.Component:
+    return rx.container(
+        CommonHeader(title="SubPage"),
+        rx.heading("This is a subpage", size="7"),
+        rx.link(
+            rx.button("Go back to Home"),
+            href="/",
+        ),
+        rx.text("You can add more pages to your app by defining new functions."),
+        spacing="5",
+        justify="center",
+        min_height="85vh",
+    )
+
+
 app = rx.App()
 app.add_page(index, title="Welcome")
+app.add_page(subindex, title="Subpage")
