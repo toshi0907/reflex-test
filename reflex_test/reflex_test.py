@@ -5,26 +5,7 @@ import reflex as rx
 from rxconfig import config
 
 
-class StateAddItem(rx.State):
-    item_name: str = ""
-
-    def update_item_name(self, item):
-        self.item_name = item
-
-    def clear_item_name(self):
-        self.item_name = ""
-
-
-class State(rx.State):
-    """The app state."""
-
-    arr = ["aaa", "bbb"]
-
-    def remove_item(self, item):
-        self.arr.remove(item)
-
-    def add_item(self, item):
-        self.arr.append(item)
+### Common Item ###
 
 
 def CommonHeader(title: str) -> rx.Component:
@@ -44,58 +25,45 @@ def CommonHeader(title: str) -> rx.Component:
     )
 
 
+### For Top Page ###
+
+
 def index() -> rx.Component:
     # indexページ
     return rx.container(
         CommonHeader(title=""),
-        rx.vstack(
-            rx.text(f"{StateAddItem.item_name}"),
-            rx.input(
-                value=StateAddItem.item_name,
-                on_change=StateAddItem.update_item_name,
-                placeholder="Type here to add to the list",
-            ),
-            rx.button(
-                "Clear",
-                on_click=StateAddItem.clear_item_name,
-            ),
-            # rx.button("Click me"),
-            # rx.link("Subpage", href="/subindex"),
-            # rx.hstack(
-            #     rx.text("test1"),
-            #     rx.text("test2"),
-            #     border="1px solid black",
-            # ),
-            # タスクリスト
-            rx.foreach(
-                State.arr,
-                lambda item, index: rx.hstack(
-                    rx.text(
-                        item,
-                        width="50%",
-                    ),
-                    rx.button(
-                        "Button", width="50%", on_click=lambda: State.remove_item(item)
-                    ),
-                ),
-            ),
-            spacing="5",
-            justify="center",
-            min_height="85vh",
-        ),
     )
 
 
 ### For Todo Page ###
 
 
+class DBTodoListItem(rx.Model, table=True):
+    """データベースのテーブル定義"""
+
+    hash: int
+    create_at: str
+    update_at: str
+    title: str
+    url: str
+    datetime: str
+    repeat_dayly: bool
+    repeat_weekly: bool
+    repeat_monthly: bool
+
+
 class StateTodo(rx.State):
     inputStrTitle: str = ""
     inputStrURL: str = ""
-    inputdatetime: str = "" # 形式:2025-12-21T12:33
+    inputdatetime: str = ""  # 形式:2025-12-21T12:33
     checkBoxRepeatDayly: bool = False
     checkBoxRepeatWeekly: bool = False
     checkBoxRepeatMonthly: bool = False
+
+    dbitems: list[DBTodoListItem] = []
+
+    textErrorMessage: str = ""
+    isErrorMessageVisible: bool = False
 
     def update_inputStrTitle(self, value: str):
         print(f"update_inputStrTitle : {value}")
@@ -109,6 +77,46 @@ class StateTodo(rx.State):
         print(f"update_inputdatetime : {value}")
         self.inputdatetime = value
 
+    def update_checkBoxRepeatDayly(self, value: bool):
+        print(f"update_checkBoxRepeatDayly : {value}")
+        self.checkBoxRepeatDayly = value
+
+    def update_checkBoxRepeatWeekly(self, value: bool):
+        print(f"update_checkBoxRepeatWeekly : {value}")
+        self.checkBoxRepeatWeekly = value
+
+    def update_checkBoxRepeatMonthly(self, value: bool):
+        print(f"update_checkBoxRepeatMonthly : {value}")
+        self.checkBoxRepeatMonthly = value
+
+    def update_textErrorMessage(self, value: str):
+        print(f"update_textErrorMessage : {value}")
+        self.textErrorMessage = value
+        self.isErrorMessageVisible = True
+
+    def add_todo_item(self):
+        print("add_todo_item")
+        with rx.session() as session:
+            new_item = DBTodoListItem(
+                hash=1,
+                create_at="2024-01-01 12:00:00",
+                update_at="2024-01-01 12:00:00",
+                title=self.inputStrTitle,
+                url=self.inputStrURL,
+                datetime=self.inputdatetime,
+                repeat_dayly=self.checkBoxRepeatDayly,
+                repeat_weekly=self.checkBoxRepeatWeekly,
+                repeat_monthly=self.checkBoxRepeatMonthly,
+            )
+            session.add(new_item)
+            session.commit()
+
+    def get_todo_item(self):
+        with rx.session() as session:
+            # select文で全件取得
+            self.dbitems = session.exec(DBTodoListItem.select()).all()
+            print(len(self.dbitems))
+
     def clear_inputs(self):
         self.inputStrTitle = ""
         self.inputStrURL = ""
@@ -116,7 +124,6 @@ class StateTodo(rx.State):
         self.checkBoxRepeatDayly = False
         self.checkBoxRepeatWeekly = False
         self.checkBoxRepeatMonthly = False
-        return ""
 
 
 def todo_page_regist_item() -> rx.Component:
@@ -157,7 +164,22 @@ def todo_page_regist_item() -> rx.Component:
                 ),
                 rx.button(
                     "Clear",
-                    on_click=lambda: State.add_item(StateTodo.clear_inputs()),
+                    on_click=lambda: StateTodo.clear_inputs(),
+                ),
+                rx.button(
+                    "Add Item",
+                    on_click=lambda: StateTodo.add_todo_item(),
+                ),
+                rx.button(
+                    "Get Item",
+                    on_click=lambda: StateTodo.get_todo_item(),
+                ),
+                rx.cond(
+                    StateTodo.isErrorMessageVisible,
+                    rx.text(
+                        StateTodo.textErrorMessage,
+                        status="error",
+                    ),
                 ),
                 minwidth="300px",
                 width="100%",
@@ -165,11 +187,27 @@ def todo_page_regist_item() -> rx.Component:
         ),
     )
 
+def todo_page_view_items() -> rx.Component:
+    StateTodo.get_todo_item()
+    return rx.vstack(
+        rx.heading("Todo Items", as_="h2"),
+        # rx.text(len(StateTodo.get_todo_item())),
+        rx.foreach(
+            StateTodo.dbitems,
+            lambda item: rx.vstack(
+                rx.text(f"Title: {item.title}"),
+                rx.text(f"URL: {item.url}"),
+                rx.text(f"Datetime: {item.datetime}"),
+                rx.divider(),
+            ),
+        ),
+    )
 
 def todo_page() -> rx.Component:
     return rx.container(
         CommonHeader(title="Todo"),
         todo_page_regist_item(),
+        todo_page_view_items(),
     )
 
 
