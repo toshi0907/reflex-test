@@ -1,8 +1,25 @@
 """Welcome to Reflex! This file outlines the steps to create a basic app."""
 
 import reflex as rx
+from sqlalchemy import create_engine, inspect
 
 from rxconfig import config
+
+
+# データベース初期化
+def _init_db():
+    """アプリケーション起動時にデータベーステーブルを初期化"""
+    try:
+        engine = create_engine(config.db_url)
+        inspector = inspect(engine)
+
+        # テーブルが存在しない場合は作成
+        if "dbtodolistitem" not in inspector.get_table_names():
+            print("Creating DBTodoListItem table...")
+            rx.Model.metadata.create_all(engine)
+            print("DBTodoListItem table created successfully.")
+    except Exception as e:
+        print(f"Database initialization error: {e}")
 
 
 ### Common Item ###
@@ -137,7 +154,7 @@ class StateTodo(rx.State):
                 item_todos = session.exec(
                     DBTodoListItem.select().where(DBTodoListItem.id == self.textHash)
                 ).all()
-                
+
                 for item_todo in item_todos:
                     item_todo.title = self.inputStrTitle
                     item_todo.url = self.inputStrURL
@@ -148,26 +165,25 @@ class StateTodo(rx.State):
                     item_todo.notify_webhook = self.checkBoxNotifyWebhook
                     item_todo.notify_email = self.checkBoxNotifyEmail
                     session.add(item_todo)
-                
+
                 session.commit()
         else:
             with rx.session() as session:
-                        new_item = DBTodoListItem(
-                            hash=1,
-                            create_at="2024-01-01 12:00:00",
-                            update_at="2024-01-01 12:00:00",
-                            title=self.inputStrTitle,
-                            url=self.inputStrURL,
-                            datetime=self.inputdatetime,
-                            repeat_daily=self.checkBoxRepeatDayly,
-                            repeat_weekly=self.checkBoxRepeatWeekly,
-                            repeat_monthly=self.checkBoxRepeatMonthly,
-                            notify_webhook=self.checkBoxNotifyWebhook,
-                            notify_email=self.checkBoxNotifyEmail,
-            )
+                new_item = DBTodoListItem(
+                    hash=1,
+                    create_at="2024-01-01 12:00:00",
+                    update_at="2024-01-01 12:00:00",
+                    title=self.inputStrTitle,
+                    url=self.inputStrURL,
+                    datetime=self.inputdatetime,
+                    repeat_daily=self.checkBoxRepeatDayly,
+                    repeat_weekly=self.checkBoxRepeatWeekly,
+                    repeat_monthly=self.checkBoxRepeatMonthly,
+                    notify_webhook=self.checkBoxNotifyWebhook,
+                    notify_email=self.checkBoxNotifyEmail,
+                )
             session.add(new_item)
             session.commit()
-        
 
         self.clear_inputs()
         self.get_todo_item()
@@ -338,3 +354,6 @@ app.add_page(
     route="/todo_page",
     on_load=StateTodo.init_page(),
 )
+
+# Initialize database on startup
+_init_db()
