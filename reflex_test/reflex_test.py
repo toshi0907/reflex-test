@@ -157,6 +157,18 @@ class StateTodo(rx.State):
             self.dbitems = session.exec(DBTodoListItem.select()).all()
             self.dbitemnum = len(self.dbitems)
 
+    def update_item(self, item: DBTodoListItem):
+        print("update_item")
+        self.textHash = item.hash
+        self.inputStrTitle = item.title
+        self.inputStrURL = item.url
+        self.inputdatetime = item.datetime
+        self.checkBoxRepeatDayly = item.repeat_daily
+        self.checkBoxRepeatWeekly = item.repeat_weekly
+        self.checkBoxRepeatMonthly = item.repeat_monthly
+        self.checkBoxNotifyWebhook = item.notify_webhook
+        self.checkBoxNotifyEmail = item.notify_email
+
     def clear_inputs(self):
         self.inputStrTitle = ""
         self.inputStrURL = ""
@@ -264,6 +276,7 @@ def todo_page_view_items() -> rx.Component:
                 rx.hstack(
                     rx.button(
                         "Edit",
+                        on_click=lambda: StateTodo.update_item(item),
                     ),
                     rx.text(f"Title: {item.title}"),
                 ),
