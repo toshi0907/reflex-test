@@ -47,7 +47,7 @@ class DBTodoListItem(rx.Model, table=True):
     title: str
     url: str
     datetime: str
-    repeat_dayly: bool
+    repeat_daily: bool
     repeat_weekly: bool
     repeat_monthly: bool
 
@@ -61,9 +61,14 @@ class StateTodo(rx.State):
     checkBoxRepeatMonthly: bool = False
 
     dbitems: list[DBTodoListItem] = []
+    dbitemnum: int = 0
 
     textErrorMessage: str = ""
     isErrorMessageVisible: bool = False
+
+    def init_page(self):
+        print("StateTodo init_page")
+        self.get_todo_item()
 
     def update_inputStrTitle(self, value: str):
         print(f"update_inputStrTitle : {value}")
@@ -104,18 +109,20 @@ class StateTodo(rx.State):
                 title=self.inputStrTitle,
                 url=self.inputStrURL,
                 datetime=self.inputdatetime,
-                repeat_dayly=self.checkBoxRepeatDayly,
+                repeat_daily=self.checkBoxRepeatDayly,
                 repeat_weekly=self.checkBoxRepeatWeekly,
                 repeat_monthly=self.checkBoxRepeatMonthly,
             )
             session.add(new_item)
             session.commit()
 
+        self.get_todo_item()
+
     def get_todo_item(self):
         with rx.session() as session:
             # select文で全件取得
             self.dbitems = session.exec(DBTodoListItem.select()).all()
-            print(len(self.dbitems))
+            self.dbitemnum = len(self.dbitems)
 
     def clear_inputs(self):
         self.inputStrTitle = ""
@@ -162,17 +169,23 @@ def todo_page_regist_item() -> rx.Component:
                         "Repeat Monthly", is_checked=StateTodo.checkBoxRepeatMonthly
                     ),
                 ),
-                rx.button(
-                    "Clear",
-                    on_click=lambda: StateTodo.clear_inputs(),
-                ),
-                rx.button(
-                    "Add Item",
-                    on_click=lambda: StateTodo.add_todo_item(),
-                ),
-                rx.button(
-                    "Get Item",
-                    on_click=lambda: StateTodo.get_todo_item(),
+                rx.hstack(
+                    rx.button(
+                        "Clear",
+                        on_click=lambda: StateTodo.clear_inputs(),
+                        width="30%",
+                    ),
+                    rx.button(
+                        "Add Item",
+                        on_click=lambda: StateTodo.add_todo_item(),
+                        width="30%",
+                    ),
+                    rx.button(
+                        "Get Item",
+                        on_click=lambda: StateTodo.get_todo_item(),
+                        width="30%",
+                    ),
+                    width="100%",
                 ),
                 rx.cond(
                     StateTodo.isErrorMessageVisible,
@@ -187,30 +200,45 @@ def todo_page_regist_item() -> rx.Component:
         ),
     )
 
+
 def todo_page_view_items() -> rx.Component:
     StateTodo.get_todo_item()
     return rx.vstack(
         rx.heading("Todo Items", as_="h2"),
-        # rx.text(len(StateTodo.get_todo_item())),
+        rx.text(value=StateTodo.dbitemnum),
         rx.foreach(
             StateTodo.dbitems,
             lambda item: rx.vstack(
-                rx.text(f"Title: {item.title}"),
+                rx.hstack(
+                    rx.button(
+                        "Edit",
+                    ),
+                    rx.text(f"Title: {item.title}"),
+                ),
                 rx.text(f"URL: {item.url}"),
+                rx.text(
+                    f"Repeat Daily: {item.repeat_daily} / Repeat Weekly: {item.repeat_weekly} / Repeat Monthly: {item.repeat_monthly}"
+                ),
                 rx.text(f"Datetime: {item.datetime}"),
-                rx.divider(),
             ),
         ),
     )
+
 
 def todo_page() -> rx.Component:
     return rx.container(
         CommonHeader(title="Todo"),
         todo_page_regist_item(),
+        rx.divider(),
         todo_page_view_items(),
+        rx.divider(),
+        minwidth="300px",
+        width="100%",
     )
 
 
 app = rx.App()
 app.add_page(index, title="TopPage")
-app.add_page(todo_page, title="TodoPage", route="/todo_page")
+app.add_page(
+    todo_page, title="TodoPage", route="/todo_page", on_load=StateTodo.init_page()
+)
