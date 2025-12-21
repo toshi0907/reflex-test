@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: adbce4216a37
+Revision ID: abccac58e90b
 Revises: 
-Create Date: 2025-12-21 03:00:16.524854
+Create Date: 2025-12-21 06:37:22.316045
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 import sqlmodel
 
 # revision identifiers, used by Alembic.
-revision: str = 'adbce4216a37'
+revision: str = 'abccac58e90b'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -29,9 +29,11 @@ def upgrade() -> None:
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('url', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('datetime', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.Column('repeat_dayly', sa.Boolean(), nullable=False),
+    sa.Column('repeat_daily', sa.Boolean(), nullable=False),
     sa.Column('repeat_weekly', sa.Boolean(), nullable=False),
     sa.Column('repeat_monthly', sa.Boolean(), nullable=False),
+    sa.Column('notify_webhook', sa.Boolean(), nullable=False),
+    sa.Column('notify_email', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

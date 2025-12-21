@@ -47,18 +47,29 @@ class DBTodoListItem(rx.Model, table=True):
     title: str
     url: str
     datetime: str
+
     repeat_daily: bool
     repeat_weekly: bool
     repeat_monthly: bool
 
+    notify_webhook: bool
+    notify_email: bool
+
 
 class StateTodo(rx.State):
+    """TodoページのState定義"""
+
+    textHash: int = -1
+
     inputStrTitle: str = ""
     inputStrURL: str = ""
     inputdatetime: str = ""  # 形式:2025-12-21T12:33
     checkBoxRepeatDayly: bool = False
     checkBoxRepeatWeekly: bool = False
     checkBoxRepeatMonthly: bool = False
+
+    checkBoxNotifyWebhook: bool = False
+    checkBoxNotifyEmail: bool = False
 
     dbitems: list[DBTodoListItem] = []
     dbitemnum: int = 0
@@ -94,6 +105,14 @@ class StateTodo(rx.State):
         print(f"update_checkBoxRepeatMonthly : {value}")
         self.checkBoxRepeatMonthly = value
 
+    def update_checkBoxNotifyWebhook(self, value: bool):
+        print(f"update_checkBoxNotifyWebhook : {value}")
+        self.checkBoxNotifyWebhook = value
+
+    def update_checkBoxNotifyEmail(self, value: bool):
+        print(f"update_checkBoxNotifyEmail : {value}")
+        self.checkBoxNotifyEmail = value
+
     def update_textErrorMessage(self, value: str):
         print(f"update_textErrorMessage : {value}")
         self.textErrorMessage = value
@@ -101,6 +120,17 @@ class StateTodo(rx.State):
 
     def add_todo_item(self):
         print("add_todo_item")
+
+        if self.inputStrTitle == "":
+            self.update_textErrorMessage("Title is required.")
+            return
+
+        if self.checkBoxNotifyEmail is False and self.checkBoxNotifyWebhook is False:
+            self.update_textErrorMessage(
+                "At least one notification method is required."
+            )
+            return
+
         with rx.session() as session:
             new_item = DBTodoListItem(
                 hash=1,
@@ -112,6 +142,8 @@ class StateTodo(rx.State):
                 repeat_daily=self.checkBoxRepeatDayly,
                 repeat_weekly=self.checkBoxRepeatWeekly,
                 repeat_monthly=self.checkBoxRepeatMonthly,
+                notify_webhook=self.checkBoxNotifyWebhook,
+                notify_email=self.checkBoxNotifyEmail,
             )
             session.add(new_item)
             session.commit()
@@ -132,6 +164,8 @@ class StateTodo(rx.State):
         self.checkBoxRepeatDayly = False
         self.checkBoxRepeatWeekly = False
         self.checkBoxRepeatMonthly = False
+        self.checkBoxNotifyWebhook = False
+        self.checkBoxNotifyEmail = False
 
 
 def todo_page_regist_item() -> rx.Component:
@@ -139,6 +173,7 @@ def todo_page_regist_item() -> rx.Component:
         rx.vstack(
             rx.heading("Add Item", as_="h2"),
             rx.vstack(
+                rx.text(f"ID {StateTodo.textHash}"),
                 rx.input(
                     StateTodo.inputStrTitle,
                     on_change=StateTodo.update_inputStrTitle,
@@ -160,14 +195,32 @@ def todo_page_regist_item() -> rx.Component:
                     type="datetime-local",
                 ),
                 rx.hstack(
+                    rx.text("Notify", width="100px" , margin_left="20px"),
                     rx.checkbox(
-                        "Repeat Daily", is_checked=StateTodo.checkBoxRepeatDayly
+                        "Webhook",
+                        is_checked=StateTodo.checkBoxNotifyWebhook,
+                        on_change=StateTodo.update_checkBoxNotifyWebhook,
                     ),
                     rx.checkbox(
-                        "Repeat Weekly", is_checked=StateTodo.checkBoxRepeatWeekly
+                        "Email",
+                        is_checked=StateTodo.checkBoxNotifyEmail,
+                        on_change=StateTodo.update_checkBoxNotifyEmail,
+                    ),
+                    rx.text("Repeat", width="100px", margin_left="20px"),
+                    rx.checkbox(
+                        "Daily",
+                        is_checked=StateTodo.checkBoxRepeatDayly,
+                        on_change=StateTodo.update_checkBoxRepeatDayly,
                     ),
                     rx.checkbox(
-                        "Repeat Monthly", is_checked=StateTodo.checkBoxRepeatMonthly
+                        "Weekly",
+                        is_checked=StateTodo.checkBoxRepeatWeekly,
+                        on_change=StateTodo.update_checkBoxRepeatWeekly,
+                    ),
+                    rx.checkbox(
+                        "Monthly",
+                        is_checked=StateTodo.checkBoxRepeatMonthly,
+                        on_change=StateTodo.update_checkBoxRepeatMonthly,
                     ),
                 ),
                 rx.hstack(
@@ -212,8 +265,9 @@ def todo_page_view_items() -> rx.Component:
                 ),
                 rx.text(f"URL: {item.url}"),
                 rx.text(
-                    f"Repeat Daily: {item.repeat_daily} / Repeat Weekly: {item.repeat_weekly} / Repeat Monthly: {item.repeat_monthly}"
+                    f"Daily: {item.repeat_daily} / Weekly: {item.repeat_weekly} / Monthly: {item.repeat_monthly}"
                 ),
+                rx.text(f"Webhook: {item.notify_webhook} / Email: {item.notify_email}"),
                 rx.text(f"Datetime: {item.datetime}"),
             ),
         ),
