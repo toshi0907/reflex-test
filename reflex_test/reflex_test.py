@@ -166,6 +166,8 @@ class StateTodo(rx.State):
         self.checkBoxRepeatMonthly = False
         self.checkBoxNotifyWebhook = False
         self.checkBoxNotifyEmail = False
+        self.isErrorMessageVisible = False
+        self.textErrorMessage = ""
 
 
 def todo_page_regist_item() -> rx.Component:
@@ -175,57 +177,59 @@ def todo_page_regist_item() -> rx.Component:
             rx.vstack(
                 rx.text(f"ID {StateTodo.textHash}"),
                 rx.input(
-                    StateTodo.inputStrTitle,
+                    value=StateTodo.inputStrTitle,
                     on_change=StateTodo.update_inputStrTitle,
                     placeholder="Enter Item Title",
                     width="100%",
                     minwidth="300px",
                 ),
                 rx.input(
-                    StateTodo.inputStrURL,
+                    value=StateTodo.inputStrURL,
                     on_change=StateTodo.update_inputStrURL,
                     placeholder="Enter URL",
                     width="100%",
                     minwidth="300px",
                 ),
                 rx.input(
-                    StateTodo.inputdatetime,
+                    value=StateTodo.inputdatetime,
                     on_change=StateTodo.update_inputdatetime,
                     placeholder="Select Date and Time",
                     type="datetime-local",
                 ),
                 rx.hstack(
-                    rx.text("Notify", width="100px" , margin_left="20px"),
+                    rx.text("Notify", width="100px", margin_left="20px"),
                     rx.checkbox(
                         "Webhook",
-                        is_checked=StateTodo.checkBoxNotifyWebhook,
+                        checked=StateTodo.checkBoxNotifyWebhook,
                         on_change=StateTodo.update_checkBoxNotifyWebhook,
                     ),
                     rx.checkbox(
                         "Email",
-                        is_checked=StateTodo.checkBoxNotifyEmail,
+                        checked=StateTodo.checkBoxNotifyEmail,
                         on_change=StateTodo.update_checkBoxNotifyEmail,
                     ),
                     rx.text("Repeat", width="100px", margin_left="20px"),
                     rx.checkbox(
                         "Daily",
-                        is_checked=StateTodo.checkBoxRepeatDayly,
+                        checked=StateTodo.checkBoxRepeatDayly,
                         on_change=StateTodo.update_checkBoxRepeatDayly,
                     ),
                     rx.checkbox(
                         "Weekly",
-                        is_checked=StateTodo.checkBoxRepeatWeekly,
+                        checked=StateTodo.checkBoxRepeatWeekly,
                         on_change=StateTodo.update_checkBoxRepeatWeekly,
                     ),
                     rx.checkbox(
                         "Monthly",
-                        is_checked=StateTodo.checkBoxRepeatMonthly,
+                        checked=StateTodo.checkBoxRepeatMonthly,
                         on_change=StateTodo.update_checkBoxRepeatMonthly,
                     ),
                 ),
                 rx.hstack(
                     rx.button(
-                        "Clear", on_click=lambda: StateTodo.clear_inputs(), width="30%"
+                        "Clear",
+                        on_click=lambda: StateTodo.clear_inputs(),
+                        width="30%",
                     ),
                     rx.button(
                         "Add Item",
