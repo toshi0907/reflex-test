@@ -37,8 +37,8 @@ def CommonHeader(title: str) -> rx.Component:
     return rx.vstack(
         rx.heading(title_disp),
         rx.hstack(
-            rx.link("index", href="/"),
-            rx.link("subpage", href="/subindex"),
+            rx.link("TopPage", href="/"),
+            rx.link("TodoPage", href="/todo_page"),
         ),
         rx.divider(),
     )
@@ -49,7 +49,6 @@ def index() -> rx.Component:
     return rx.container(
         CommonHeader(title=""),
         rx.vstack(
-
             rx.text(f"{StateAddItem.item_name}"),
             rx.input(
                 value=StateAddItem.item_name,
@@ -87,21 +86,93 @@ def index() -> rx.Component:
     )
 
 
-def subindex() -> rx.Component:
-    return rx.container(
-        CommonHeader(title="SubPage"),
-        rx.heading("This is a subpage", size="7"),
-        rx.link(
-            rx.button("Go back to Home"),
-            href="/",
+### For Todo Page ###
+
+
+class StateTodo(rx.State):
+    inputStrTitle: str = ""
+    inputStrURL: str = ""
+    inputdatetime: str = "" # 形式:2025-12-21T12:33
+    checkBoxRepeatDayly: bool = False
+    checkBoxRepeatWeekly: bool = False
+    checkBoxRepeatMonthly: bool = False
+
+    def update_inputStrTitle(self, value: str):
+        print(f"update_inputStrTitle : {value}")
+        self.inputStrTitle = value
+
+    def update_inputStrURL(self, value: str):
+        print(f"update_inputStrURL : {value}")
+        self.inputStrURL = value
+
+    def update_inputdatetime(self, value: str):
+        print(f"update_inputdatetime : {value}")
+        self.inputdatetime = value
+
+    def clear_inputs(self):
+        self.inputStrTitle = ""
+        self.inputStrURL = ""
+        self.inputdatetime = ""
+        self.checkBoxRepeatDayly = False
+        self.checkBoxRepeatWeekly = False
+        self.checkBoxRepeatMonthly = False
+        return ""
+
+
+def todo_page_regist_item() -> rx.Component:
+    return (
+        rx.vstack(
+            rx.heading("Add Item", as_="h2"),
+            rx.vstack(
+                rx.input(
+                    value=StateTodo.inputStrTitle,
+                    on_change=StateTodo.update_inputStrTitle,
+                    placeholder="Enter Item Title",
+                    width="100%",
+                    minwidth="300px",
+                ),
+                rx.input(
+                    value=StateTodo.inputStrURL,
+                    on_change=StateTodo.update_inputStrURL,
+                    placeholder="Enter URL",
+                    width="100%",
+                    minwidth="300px",
+                ),
+                rx.input(
+                    value=StateTodo.inputdatetime,
+                    on_change=StateTodo.update_inputdatetime,
+                    placeholder="Select Date and Time",
+                    type="datetime-local",
+                ),
+                rx.hstack(
+                    rx.checkbox(
+                        "Repeat Daily", is_checked=StateTodo.checkBoxRepeatDayly
+                    ),
+                    rx.checkbox(
+                        "Repeat Weekly", is_checked=StateTodo.checkBoxRepeatWeekly
+                    ),
+                    rx.checkbox(
+                        "Repeat Monthly", is_checked=StateTodo.checkBoxRepeatMonthly
+                    ),
+                ),
+                rx.button(
+                    "Clear",
+                    on_click=lambda: State.add_item(StateTodo.clear_inputs()),
+                ),
+                minwidth="300px",
+                width="100%",
+            ),
         ),
-        rx.text("You can add more pages to your app by defining new functions."),
-        spacing="5",
-        justify="center",
-        min_height="85vh",
+    )
+
+
+def todo_page() -> rx.Component:
+    return rx.container(
+        CommonHeader(title="Todo"),
+        todo_page_regist_item(),
     )
 
 
 app = rx.App()
-app.add_page(index, title="Welcome")
-app.add_page(subindex, title="Subpage")
+app.add_page(index, title="TopPage")
+app.add_page(todo_page, title="TodoPage", route="/todo_page")
