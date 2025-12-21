@@ -153,13 +153,19 @@ def todo_page_regist_item() -> rx.Component:
                 ),
                 rx.hstack(
                     rx.checkbox(
-                        "Repeat Daily", is_checked=StateTodo.checkBoxRepeatDayly
+                        "Repeat Daily",
+                        is_checked=StateTodo.checkBoxRepeatDayly,
+                        on_change=StateTodo.update_checkBoxRepeatDayly,
                     ),
                     rx.checkbox(
-                        "Repeat Weekly", is_checked=StateTodo.checkBoxRepeatWeekly
+                        "Repeat Weekly",
+                        is_checked=StateTodo.checkBoxRepeatWeekly,
+                        on_change=StateTodo.update_checkBoxRepeatWeekly,
                     ),
                     rx.checkbox(
-                        "Repeat Monthly", is_checked=StateTodo.checkBoxRepeatMonthly
+                        "Repeat Monthly",
+                        is_checked=StateTodo.checkBoxRepeatMonthly,
+                        on_change=StateTodo.update_checkBoxRepeatMonthly,
                     ),
                 ),
                 rx.button(
