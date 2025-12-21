@@ -59,7 +59,7 @@ class DBTodoListItem(rx.Model, table=True):
 class StateTodo(rx.State):
     """TodoページのState定義"""
 
-    textHash: int = -1
+    textHash: str = ""
 
     inputStrTitle: str = ""
     inputStrURL: str = ""
@@ -131,22 +131,43 @@ class StateTodo(rx.State):
             )
             return
 
-        with rx.session() as session:
-            new_item = DBTodoListItem(
-                hash=1,
-                create_at="2024-01-01 12:00:00",
-                update_at="2024-01-01 12:00:00",
-                title=self.inputStrTitle,
-                url=self.inputStrURL,
-                datetime=self.inputdatetime,
-                repeat_daily=self.checkBoxRepeatDayly,
-                repeat_weekly=self.checkBoxRepeatWeekly,
-                repeat_monthly=self.checkBoxRepeatMonthly,
-                notify_webhook=self.checkBoxNotifyWebhook,
-                notify_email=self.checkBoxNotifyEmail,
+        if self.textHash != "":
+            with rx.session() as session:
+                # 条件に一致するものを検索
+                item_todos = session.exec(
+                    DBTodoListItem.select().where(DBTodoListItem.id == self.textHash)
+                ).all()
+                
+                for item_todo in item_todos:
+                    item_todo.title = self.inputStrTitle
+                    item_todo.url = self.inputStrURL
+                    item_todo.datetime = self.inputdatetime
+                    item_todo.repeat_daily = self.checkBoxRepeatDayly
+                    item_todo.repeat_weekly = self.checkBoxRepeatWeekly
+                    item_todo.repeat_monthly = self.checkBoxRepeatMonthly
+                    item_todo.notify_webhook = self.checkBoxNotifyWebhook
+                    item_todo.notify_email = self.checkBoxNotifyEmail
+                    session.add(item_todo)
+                
+                session.commit()
+        else:
+            with rx.session() as session:
+                        new_item = DBTodoListItem(
+                            hash=1,
+                            create_at="2024-01-01 12:00:00",
+                            update_at="2024-01-01 12:00:00",
+                            title=self.inputStrTitle,
+                            url=self.inputStrURL,
+                            datetime=self.inputdatetime,
+                            repeat_daily=self.checkBoxRepeatDayly,
+                            repeat_weekly=self.checkBoxRepeatWeekly,
+                            repeat_monthly=self.checkBoxRepeatMonthly,
+                            notify_webhook=self.checkBoxNotifyWebhook,
+                            notify_email=self.checkBoxNotifyEmail,
             )
             session.add(new_item)
             session.commit()
+        
 
         self.clear_inputs()
         self.get_todo_item()
@@ -159,7 +180,7 @@ class StateTodo(rx.State):
 
     def update_item(self, item: DBTodoListItem):
         print("update_item")
-        self.textHash = item.hash
+        self.textHash = item.id
         self.inputStrTitle = item.title
         self.inputStrURL = item.url
         self.inputdatetime = item.datetime
@@ -170,6 +191,7 @@ class StateTodo(rx.State):
         self.checkBoxNotifyEmail = item.notify_email
 
     def clear_inputs(self):
+        self.textHash = ""
         self.inputStrTitle = ""
         self.inputStrURL = ""
         self.inputdatetime = ""
