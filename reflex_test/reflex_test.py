@@ -116,6 +116,7 @@ class StateTodo(rx.State):
             session.add(new_item)
             session.commit()
 
+        self.clear_inputs()
         self.get_todo_item()
 
     def get_todo_item(self):
@@ -139,21 +140,21 @@ def todo_page_regist_item() -> rx.Component:
             rx.heading("Add Item", as_="h2"),
             rx.vstack(
                 rx.input(
-                    value=StateTodo.inputStrTitle,
+                    StateTodo.inputStrTitle,
                     on_change=StateTodo.update_inputStrTitle,
                     placeholder="Enter Item Title",
                     width="100%",
                     minwidth="300px",
                 ),
                 rx.input(
-                    value=StateTodo.inputStrURL,
+                    StateTodo.inputStrURL,
                     on_change=StateTodo.update_inputStrURL,
                     placeholder="Enter URL",
                     width="100%",
                     minwidth="300px",
                 ),
                 rx.input(
-                    value=StateTodo.inputdatetime,
+                    StateTodo.inputdatetime,
                     on_change=StateTodo.update_inputdatetime,
                     placeholder="Select Date and Time",
                     type="datetime-local",
@@ -171,9 +172,7 @@ def todo_page_regist_item() -> rx.Component:
                 ),
                 rx.hstack(
                     rx.button(
-                        "Clear",
-                        on_click=lambda: StateTodo.clear_inputs(),
-                        width="30%",
+                        "Clear", on_click=lambda: StateTodo.clear_inputs(), width="30%"
                     ),
                     rx.button(
                         "Add Item",
@@ -189,10 +188,7 @@ def todo_page_regist_item() -> rx.Component:
                 ),
                 rx.cond(
                     StateTodo.isErrorMessageVisible,
-                    rx.text(
-                        StateTodo.textErrorMessage,
-                        status="error",
-                    ),
+                    rx.text(StateTodo.textErrorMessage, status="error"),
                 ),
                 minwidth="300px",
                 width="100%",
@@ -202,10 +198,9 @@ def todo_page_regist_item() -> rx.Component:
 
 
 def todo_page_view_items() -> rx.Component:
-    StateTodo.get_todo_item()
     return rx.vstack(
         rx.heading("Todo Items", as_="h2"),
-        rx.text(value=StateTodo.dbitemnum),
+        rx.text(f"{StateTodo.dbitemnum}" + " items found."),
         rx.foreach(
             StateTodo.dbitems,
             lambda item: rx.vstack(
@@ -222,6 +217,8 @@ def todo_page_view_items() -> rx.Component:
                 rx.text(f"Datetime: {item.datetime}"),
             ),
         ),
+        width="100%",
+        minwidth="300px",
     )
 
 
@@ -238,7 +235,13 @@ def todo_page() -> rx.Component:
 
 
 app = rx.App()
-app.add_page(index, title="TopPage")
 app.add_page(
-    todo_page, title="TodoPage", route="/todo_page", on_load=StateTodo.init_page()
+    index,
+    title="TNApp : TopPage",
+)
+app.add_page(
+    todo_page,
+    title="TNApp : TodoPage",
+    route="/todo_page",
+    on_load=StateTodo.init_page(),
 )
