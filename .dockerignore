@@ -1,0 +1,53 @@
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Reflex
+.web/
+.states/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment (ボリュームマウントで使用するため除外)
+.env
+.env.example
+
+# Database (ボリュームマウントで使用するため除外)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dev Container
+.devcontainer/
+
+# Documentation
+memo.md
+plan.md
+README.md
+
+# Setup
+setup_codespace.sh
