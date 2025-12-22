@@ -30,9 +30,13 @@ class SendEmail(tn_base_class.BaseNotify):
             # --- SMTPサーバへの接続と送信 ---
             # GmailのSMTPサーバ: smtp.gmail.com / ポート番号: 587
             server = smtplib.SMTP("smtp.gmail.com", 587)
-            server.starttls()  # セキュリティ(TLS)の開始
+            # セキュリティ(TLS)の開始
+            server.starttls()
+            # ログイン
             server.login(self.gmail_user, self.gmail_password)
+            # メールの送信
             server.send_message(msg)
+            # サーバの終了
             server.close()
 
             print("SendEmail.send_email: メール送信完了")
