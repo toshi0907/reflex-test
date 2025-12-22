@@ -4,4 +4,5 @@
     "editor.formatOnSave": true,
     "git.enableSmartCommit": true,
     "github.copilot.nextEditSuggestions.enabled": true,
+    "git.autofetch": true
 }
