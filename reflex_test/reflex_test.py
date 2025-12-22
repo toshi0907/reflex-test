@@ -6,6 +6,9 @@ from sqlalchemy import create_engine, inspect
 from rxconfig import config
 
 
+### Initialize
+
+
 # データベース初期化
 def _init_db():
     """アプリケーション起動時にデータベーステーブルを初期化"""
@@ -39,6 +42,7 @@ def CommonHeader(title: str) -> rx.Component:
             rx.link("TodoPage", href="/todo_page"),
         ),
         rx.divider(),
+        rx.spacer(height="20px"),
     )
 
 
@@ -72,6 +76,7 @@ class DBTodoListItem(rx.Model, table=True):
     notify_webhook: bool
     notify_email: bool
 
+    done: bool = False
 
 class StateTodo(rx.State):
     """TodoページのState定義"""
@@ -194,6 +199,20 @@ class StateTodo(rx.State):
             self.dbitems = session.exec(DBTodoListItem.select()).all()
             self.dbitemnum = len(self.dbitems)
 
+    def remove_todo_item(self, item_id: str):
+        print("remove_todo_item")
+        with rx.session() as session:
+            item_todos = session.exec(
+                DBTodoListItem.select().where(DBTodoListItem.id == item_id)
+            ).all()
+
+            for item_todo in item_todos:
+                session.delete(item_todo)
+
+            session.commit()
+
+        self.get_todo_item()
+
     def update_item(self, item: DBTodoListItem):
         print("update_item")
         self.textHash = item.id
@@ -277,25 +296,21 @@ def todo_page_regist_item() -> rx.Component:
                 ),
                 rx.hstack(
                     rx.button(
-                        "Clear",
-                        on_click=lambda: StateTodo.clear_inputs(),
-                        width="30%",
-                    ),
-                    rx.button(
                         "Add Item",
                         on_click=lambda: StateTodo.add_todo_item(),
-                        width="30%",
                     ),
                     rx.button(
-                        "Get Item",
-                        on_click=lambda: StateTodo.get_todo_item(),
-                        width="30%",
+                        "Clear",
+                        on_click=lambda: StateTodo.clear_inputs(),
                     ),
                     width="100%",
                 ),
                 rx.cond(
                     StateTodo.isErrorMessageVisible,
-                    rx.text(StateTodo.textErrorMessage, status="error"),
+                    rx.text(
+                        StateTodo.textErrorMessage,
+                        color="red",
+                    ),
                 ),
                 minwidth="300px",
                 width="100%",
@@ -316,6 +331,10 @@ def todo_page_view_items() -> rx.Component:
                         "Edit",
                         on_click=lambda: StateTodo.update_item(item),
                     ),
+                    rx.button(
+                        "Remove",
+                        on_click=lambda: StateTodo.remove_todo_item(item.id),
+                    ),
                     rx.text(f"Title: {item.title}"),
                 ),
                 rx.text(f"URL: {item.url}"),
@@ -335,9 +354,13 @@ def todo_page() -> rx.Component:
     return rx.container(
         CommonHeader(title="Todo"),
         todo_page_regist_item(),
+        rx.spacer(height="20px"),
         rx.divider(),
+        rx.spacer(height="20px"),
         todo_page_view_items(),
+        rx.spacer(height="20px"),
         rx.divider(),
+        rx.spacer(height="20px"),
         minwidth="300px",
         width="100%",
     )
