@@ -1,0 +1,22 @@
+{
+    "name": "PyReflexProject",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "GitHub.copilot-chat", // GitHub Copilot Chat
+                "MS-CEINTL.vscode-language-pack-ja", // Japanese Language Pack
+                "ms-python.python", // Python
+                "ms-python.debugpy", // Debugpy
+                "ms-python.vscode-python-envs", // Python Environments
+                "ms-python.vscode-pylance", // Pylance
+                "ms-python.black-formatter", // Black Formatter
+            ],
+            "settings": {
+                "python.languageServer": "Pylance",
+                "python.formatting.provider": "black",
+                "python.analysis.typeCheckingMode": "basic",
+                "editor.formatOnSave": true
+            }
+        }
+    }
+}
