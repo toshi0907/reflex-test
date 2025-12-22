@@ -78,10 +78,11 @@ class DBTodoListItem(rx.Model, table=True):
 
     done: bool = False
 
+
 class StateTodo(rx.State):
     """TodoページのState定義"""
 
-    textHash: str = ""
+    textHash: int = 0
 
     inputStrTitle: str = ""
     inputStrURL: str = ""
@@ -153,7 +154,7 @@ class StateTodo(rx.State):
             )
             return
 
-        if self.textHash != "":
+        if self.textHash != 0:
             with rx.session() as session:
                 # 条件に一致するものを検索
                 item_todos = session.exec(
@@ -196,7 +197,10 @@ class StateTodo(rx.State):
     def get_todo_item(self):
         with rx.session() as session:
             # select文で全件取得
-            self.dbitems = session.exec(DBTodoListItem.select()).all()
+            self.dbitems = session.exec(
+                # DBTodoListItem.select().where(DBTodoListItem.done == False)
+                DBTodoListItem.select()
+            ).all()
             self.dbitemnum = len(self.dbitems)
 
     def remove_todo_item(self, item_id: str):
@@ -207,7 +211,8 @@ class StateTodo(rx.State):
             ).all()
 
             for item_todo in item_todos:
-                session.delete(item_todo)
+                item_todo.done = True
+                session.add(item_todo)
 
             session.commit()
 
@@ -226,7 +231,7 @@ class StateTodo(rx.State):
         self.checkBoxNotifyEmail = item.notify_email
 
     def clear_inputs(self):
-        self.textHash = ""
+        self.textHash = 0
         self.inputStrTitle = ""
         self.inputStrURL = ""
         self.inputdatetime = ""
@@ -244,7 +249,7 @@ def todo_page_regist_item() -> rx.Component:
         rx.vstack(
             rx.heading("Add Item", as_="h2"),
             rx.vstack(
-                rx.text(f"ID {StateTodo.textHash}"),
+                rx.text(f"ID[{StateTodo.textHash}]"),
                 rx.input(
                     value=StateTodo.inputStrTitle,
                     on_change=StateTodo.update_inputStrTitle,
@@ -335,11 +340,12 @@ def todo_page_view_items() -> rx.Component:
                         "Remove",
                         on_click=lambda: StateTodo.remove_todo_item(item.id),
                     ),
+                    rx.text(f"Done[{item.done}]"),
                     rx.text(f"Title: {item.title}"),
                 ),
                 rx.text(f"URL: {item.url}"),
                 rx.text(
-                    f"Daily: {item.repeat_daily} / Weekly: {item.repeat_weekly} / Monthly: {item.repeat_monthly}"
+                    f"D: {item.repeat_daily} / W: {item.repeat_weekly} / M: {item.repeat_monthly}"
                 ),
                 rx.text(f"Webhook: {item.notify_webhook} / Email: {item.notify_email}"),
                 rx.text(f"Datetime: {item.datetime}"),
