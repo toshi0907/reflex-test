@@ -1,2 +1,4 @@
 
 reflex==0.8.22
+psycopg2-binary==2.9.10
+python-dotenv==1.0.1
