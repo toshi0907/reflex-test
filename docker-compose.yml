@@ -5,12 +5,13 @@ services:
       dockerfile: Dockerfile
     container_name: reflex-todo-app
     ports:
-      - "3000:3000"  # フロントエンド
-      - "8000:8000"  # バックエンドAPI
+      - "__FRONT_END_PORT__:3000"  # フロントエンド
+      - "__BACK_END_PORT__:8000"  # バックエンドAPI
     volumes:
       # ホスト側の .env と reflex_test.db を使用
       - ./.env:/app/.env:ro
-      - ./reflex_test.db:/app/reflex_test.db
+      # DBはディレクトリをマウントして管理
+      - ./data:/app/data
       # ログやステートを永続化（オプション）
       # - ./.states:/app/.states
     environment:
@@ -18,27 +19,3 @@ services:
       - REFLEX_ENV=dev
     command: reflex run --loglevel info
     restart: unless-stopped
-    networks:
-      - reflex-network
-
-  # PostgreSQLを使用する場合（オプション）
-  # postgres:
-  #   image: postgres:16-alpine
-  #   container_name: reflex-postgres
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER:-reflex}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-reflex}
-  #     POSTGRES_DB: ${POSTGRES_DB:-reflex_db}
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   networks:
-  #     - reflex-network
-
-networks:
-  reflex-network:
-    driver: bridge
-
-# volumes:
-#   postgres_data:
