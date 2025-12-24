@@ -20,20 +20,4 @@ config = rx.Config(
         rx.plugins.TailwindV4Plugin(),
     ],
     api_url=f"https://{backend_host}",  # SSL化したバックエンドURL
-    vite_config={
-        "server": {
-            "middlewareMode": True,
-            "allowedHosts": [
-                frontend_host,
-                backend_host,
-                "localhost",
-                "127.0.0.1",
-            ],
-            "hmr": {
-                "host": frontend_host,
-                "port": 443,
-                "protocol": "wss",
-            },
-        }
-    },
 )
