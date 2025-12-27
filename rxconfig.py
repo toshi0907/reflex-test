@@ -19,5 +19,4 @@ config = rx.Config(
         rx.plugins.SitemapPlugin(),
         rx.plugins.TailwindV4Plugin(),
     ],
-    api_url=f"https://{backend_host}",  # SSL化したバックエンドURL
 )
