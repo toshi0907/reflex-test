@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - REFLEX_FRONTEND_HOST=${FRONTEND_HOST}
+        - REFLEX_BACKEND_HOST=${BACKEND_HOST}
     container_name: reflex-app
     ports:
       - "${FRONTEND_PORT}:3000"  # フロントエンド
