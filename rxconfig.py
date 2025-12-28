@@ -15,6 +15,7 @@ backend_host = os.getenv("BACKEND_HOST", "localhost:8000")
 config = rx.Config(
     app_name="reflex_test",
     db_url=env_db_url,
+    api_url=f"https://{backend_host}",  # SSL化したバックエンドURL
     plugins=[
         rx.plugins.SitemapPlugin(),
         rx.plugins.TailwindV4Plugin(),
