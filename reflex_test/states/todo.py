@@ -2,6 +2,7 @@
 
 import reflex as rx
 from reflex_test.models import DBTodoListItem
+from reflex_test.services.todo import get_todo_items
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -90,7 +91,7 @@ class StateTodo(rx.State):
                 item_todos = session.exec(
                     DBTodoListItem.select().where(DBTodoListItem.id == self.textHash)
                 ).all()
-                
+
                 for item_todo in item_todos:
                     item_todo.update_at = now
                     item_todo.title = self.inputStrTitle
@@ -126,13 +127,7 @@ class StateTodo(rx.State):
         self.get_todo_item()
 
     def get_todo_item(self):
-        with rx.session() as session:
-            # select文で全件取得
-            self.dbitems = session.exec(
-                # DBTodoListItem.select().where(DBTodoListItem.done == False)
-                DBTodoListItem.select()
-            ).all()
-            self.dbitemnum = len(self.dbitems)
+        self.dbitems, self.dbitemnum = get_todo_items()
 
     def remove_todo_item(self, item_id: str):
         print("remove_todo_item")
