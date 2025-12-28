@@ -2,6 +2,8 @@
 
 import reflex as rx
 from reflex_test.models import DBTodoListItem
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 class StateTodo(rx.State):
@@ -69,6 +71,9 @@ class StateTodo(rx.State):
     def add_todo_item(self):
         print("add_todo_item")
 
+        # 日本時間（JST）
+        now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
+
         if self.inputStrTitle == "":
             self.update_textErrorMessage("Title is required.")
             return
@@ -85,8 +90,9 @@ class StateTodo(rx.State):
                 item_todos = session.exec(
                     DBTodoListItem.select().where(DBTodoListItem.id == self.textHash)
                 ).all()
-
+                
                 for item_todo in item_todos:
+                    item_todo.update_at = now
                     item_todo.title = self.inputStrTitle
                     item_todo.url = self.inputStrURL
                     item_todo.datetime = self.inputdatetime
@@ -102,8 +108,8 @@ class StateTodo(rx.State):
             with rx.session() as session:
                 new_item = DBTodoListItem(
                     hash=1,
-                    create_at="2024-01-01 12:00:00",
-                    update_at="2024-01-01 12:00:00",
+                    create_at=now,
+                    update_at=now,
                     title=self.inputStrTitle,
                     url=self.inputStrURL,
                     datetime=self.inputdatetime,

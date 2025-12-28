@@ -36,6 +36,11 @@ def todo_page_view_items() -> rx.Component:
                     rx.cond(item.repeat_monthly, rx.text("Monthly"), None),
                     margin_left="15px",
                 ),
+
+                # For debug
+                # rx.text(f"ID:{item.id}"),
+                # rx.text(f"Create at:{item.create_at}"),
+                # rx.text(f"Update at:{item.update_at}"),
             ),
         ),
         width="100%",
