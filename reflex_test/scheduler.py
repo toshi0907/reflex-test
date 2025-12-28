@@ -27,7 +27,8 @@ def register_task(func: Callable):
             print("定期実行されるタスク")
     """
     _scheduler_registered_tasks.append(func)
-    print(f"[scheduler] registered task: {func.__name__}")
+    # print(f"[scheduler] registered task: {func.__name__}")
+    func()
     return func
 
 
@@ -107,3 +108,43 @@ def health_check_task():
     """
     _now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
     print(f"[scheduler:health_check] scheduler is running at {_now}Z")
+
+
+@register_task
+def check_task_fire():
+    """
+    タスク実行確認用タスク - スケジューラがタスクを実行していることを確認
+    """
+    _now = datetime.now(ZoneInfo("Asia/Tokyo"))
+    print(f"[scheduler:check_task_fire] task fired at {_now}Z")
+
+    from reflex_test.services.todo import get_todo_items
+    from reflex_test.models import DBTodoListItem
+
+    dbitems: list[DBTodoListItem] = []
+    dbitemnum: int = 0
+    dbitems, dbitemnum = get_todo_items()
+    for item in dbitems:
+        _title = item.title
+        _dt_str = item.datetime
+        _is_webhook = item.notify_webhook
+        _is_email = item.notify_email
+        _is_fire = False
+        _dt = datetime.now(ZoneInfo("Asia/Tokyo"))
+        try:
+            _dt = datetime.strptime(_dt_str, "%Y-%m-%dT%H:%M").replace(
+                tzinfo=ZoneInfo("Asia/Tokyo")
+            )
+            _fire = "       "
+            if _dt < _now:
+                _is_fire = True
+                _fire = "FIRE!!!"
+        except Exception as e:
+            _fire = "ERROR!!"
+        print(f"{_fire}[{_is_fire}] {_title} (datetime={_dt_str} / {_dt})")
+
+        if _is_fire:
+            if _is_webhook:
+                print(f"  -> Notify Webhook for {_title}")
+            if _is_email:
+                print(f"  -> Notify Email for {_title}")
