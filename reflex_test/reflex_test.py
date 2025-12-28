@@ -2,10 +2,12 @@
 
 import reflex as rx
 from sqlalchemy import create_engine, inspect
+import asyncio
 
 from rxconfig import config
 from reflex_test.pages import index, todo_page
 from reflex_test.states import StateTodo
+from reflex_test.scheduler import start_scheduler
 
 
 # データベース初期化
@@ -38,3 +40,11 @@ app.add_page(
 
 # Initialize database on startup
 _init_db()
+
+# スケジューラーの起動
+# バックエンドサーバーが起動した後にスケジューラーを開始するため、
+# rxconfig.pyではなくここで呼び出す
+try:
+    start_scheduler()
+except Exception as e:
+    print(f"[scheduler] failed to start scheduler: {e}")
