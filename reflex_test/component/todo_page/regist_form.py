@@ -29,6 +29,8 @@ def todo_page_regist_item() -> rx.Component:
                     value=StateTodo.inputdatetime,
                     on_change=StateTodo.update_inputdatetime,
                     placeholder="Select Date and Time",
+                    width="100%",
+                    minwidth="300px",
                     type="datetime-local",
                 ),
                 rx.hstack(
@@ -43,6 +45,8 @@ def todo_page_regist_item() -> rx.Component:
                         checked=StateTodo.checkBoxNotifyEmail,
                         on_change=StateTodo.update_checkBoxNotifyEmail,
                     ),
+                ),
+                rx.hstack(
                     rx.text("Repeat", width="100px", margin_left="20px"),
                     rx.checkbox(
                         "Daily",
@@ -68,6 +72,10 @@ def todo_page_regist_item() -> rx.Component:
                     rx.button(
                         "Clear",
                         on_click=lambda: StateTodo.clear_inputs(),
+                    ),
+                    rx.button(
+                        "Done",
+                        on_click=lambda: StateTodo.remove_todo_item(StateTodo.textHash),
                     ),
                     width="100%",
                 ),

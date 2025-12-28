@@ -13,23 +13,29 @@ def todo_page_view_items() -> rx.Component:
             StateTodo.dbitems,
             lambda item: rx.vstack(
                 rx.hstack(
-                    rx.button(
-                        "Edit",
+                    # rx.text(f"Done[{item.done}]"),
+                    rx.text.strong(
+                        f"・{item.title}",
                         on_click=lambda: StateTodo.update_item(item),
+                        margin="0px",
                     ),
-                    rx.button(
-                        "Remove",
-                        on_click=lambda: StateTodo.remove_todo_item(item.id),
+                    margin="0px",
+                ),
+                rx.cond(item.url != "", rx.text(f"URL: {item.url}"), None),
+                # rx.text(f"URL: {item.url}"),
+                rx.hstack(
+                    rx.cond(
+                        item.datetime != "", rx.text(f"{item.datetime}"), "**NoDate**"
                     ),
-                    rx.text(f"Done[{item.done}]"),
-                    rx.text(f"Title: {item.title}"),
+                    rx.text("/"),
+                    rx.cond(item.notify_webhook, rx.text("WH"), None),
+                    rx.cond(item.notify_email, rx.text("ML"), None),
+                    rx.text("/"),
+                    rx.cond(item.repeat_daily, rx.text("Daily"), None),
+                    rx.cond(item.repeat_weekly, rx.text("Weekly"), None),
+                    rx.cond(item.repeat_monthly, rx.text("Monthly"), None),
+                    margin_left="15px",
                 ),
-                rx.text(f"URL: {item.url}"),
-                rx.text(
-                    f"D: {item.repeat_daily} / W: {item.repeat_weekly} / M: {item.repeat_monthly}"
-                ),
-                rx.text(f"Webhook: {item.notify_webhook} / Email: {item.notify_email}"),
-                rx.text(f"Datetime: {item.datetime}"),
             ),
         ),
         width="100%",
