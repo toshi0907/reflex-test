@@ -2,9 +2,11 @@
 
 import reflex as rx
 from reflex_test.models import DBTodoListItem
-from reflex_test.services.todo import get_todo_items
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from reflex_test.services.todo import (
+    get_todo_items as service_get_todo_items,
+    add_todo_item as service_add_todo_item,
+    remove_todo_item as service_remove_todo_item,
+)
 
 
 class StateTodo(rx.State):
@@ -72,75 +74,36 @@ class StateTodo(rx.State):
     def add_todo_item(self):
         print("add_todo_item")
 
-        # 日本時間（JST）
-        now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
+        # Service層の関数を呼び出す
+        success, error_message = service_add_todo_item(
+            text_hash=self.textHash,
+            title=self.inputStrTitle,
+            url=self.inputStrURL,
+            datetime_str=self.inputdatetime,
+            repeat_daily=self.checkBoxRepeatDayly,
+            repeat_weekly=self.checkBoxRepeatWeekly,
+            repeat_monthly=self.checkBoxRepeatMonthly,
+            notify_webhook=self.checkBoxNotifyWebhook,
+            notify_email=self.checkBoxNotifyEmail,
+        )
 
-        if self.inputStrTitle == "":
-            self.update_textErrorMessage("Title is required.")
+        if not success:
+            self.update_textErrorMessage(error_message)
             return
-
-        if self.checkBoxNotifyEmail is False and self.checkBoxNotifyWebhook is False:
-            self.update_textErrorMessage(
-                "At least one notification method is required."
-            )
-            return
-
-        if self.textHash != 0:
-            with rx.session() as session:
-                # 条件に一致するものを検索
-                item_todos = session.exec(
-                    DBTodoListItem.select().where(DBTodoListItem.id == self.textHash)
-                ).all()
-
-                for item_todo in item_todos:
-                    item_todo.update_at = now
-                    item_todo.title = self.inputStrTitle
-                    item_todo.url = self.inputStrURL
-                    item_todo.datetime = self.inputdatetime
-                    item_todo.repeat_daily = self.checkBoxRepeatDayly
-                    item_todo.repeat_weekly = self.checkBoxRepeatWeekly
-                    item_todo.repeat_monthly = self.checkBoxRepeatMonthly
-                    item_todo.notify_webhook = self.checkBoxNotifyWebhook
-                    item_todo.notify_email = self.checkBoxNotifyEmail
-                    session.add(item_todo)
-
-                session.commit()
-        else:
-            with rx.session() as session:
-                new_item = DBTodoListItem(
-                    hash=1,
-                    create_at=now,
-                    update_at=now,
-                    title=self.inputStrTitle,
-                    url=self.inputStrURL,
-                    datetime=self.inputdatetime,
-                    repeat_daily=self.checkBoxRepeatDayly,
-                    repeat_weekly=self.checkBoxRepeatWeekly,
-                    repeat_monthly=self.checkBoxRepeatMonthly,
-                    notify_webhook=self.checkBoxNotifyWebhook,
-                    notify_email=self.checkBoxNotifyEmail,
-                )
-            session.add(new_item)
-            session.commit()
 
         self.clear_inputs()
         self.get_todo_item()
 
     def get_todo_item(self):
-        self.dbitems, self.dbitemnum = get_todo_items()
+        self.dbitems, self.dbitemnum = service_get_todo_items()
 
     def remove_todo_item(self, item_id: str):
         print("remove_todo_item")
-        with rx.session() as session:
-            item_todos = session.exec(
-                DBTodoListItem.select().where(DBTodoListItem.id == item_id)
-            ).all()
+        success, error_message = service_remove_todo_item(item_id)
 
-            for item_todo in item_todos:
-                item_todo.done = True
-                session.add(item_todo)
-
-            session.commit()
+        if not success:
+            self.update_textErrorMessage(error_message)
+            return
 
         self.get_todo_item()
 
