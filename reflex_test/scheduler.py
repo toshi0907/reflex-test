@@ -8,12 +8,12 @@
 
 import os
 from typing import Callable, List
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 _scheduler_registered_tasks: List[Callable] = []  # 登録されたタスクのリスト
-_scheduler: AsyncIOScheduler | None = None
+_scheduler: BackgroundScheduler | None = None
 _started = False  # スケジューラが起動済みかどうかのフラグ
 
 
@@ -35,7 +35,7 @@ def _ensure_scheduler():
     """スケジューラのインスタンスを取得または作成"""
     global _scheduler
     if _scheduler is None:
-        _scheduler = AsyncIOScheduler(timezone="Asia/Tokyo")
+        _scheduler = BackgroundScheduler(timezone="Asia/Tokyo")
     return _scheduler
 
 
