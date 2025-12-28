@@ -118,12 +118,16 @@ def check_task_fire():
     _now = datetime.now(ZoneInfo("Asia/Tokyo"))
     print(f"[scheduler:check_task_fire] task fired at {_now}Z")
 
-    from reflex_test.services.todo import get_todo_items
+    from reflex_test.services.todo import (
+        get_todo_items as service_get_todo_items,
+        add_todo_item as service_add_todo_item,
+        remove_todo_item as service_remove_todo_item,
+    )
     from reflex_test.models import DBTodoListItem
 
     dbitems: list[DBTodoListItem] = []
     dbitemnum: int = 0
-    dbitems, dbitemnum = get_todo_items()
+    dbitems, dbitemnum = service_get_todo_items()
     for item in dbitems:
         _title = item.title
         _dt_str = item.datetime
@@ -148,3 +152,5 @@ def check_task_fire():
                 print(f"  -> Notify Webhook for {_title}")
             if _is_email:
                 print(f"  -> Notify Email for {_title}")
+            # service_remove_todo_item(str(item.id)) # Fireしたら削除
+
