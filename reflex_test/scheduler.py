@@ -150,10 +150,14 @@ def check_task_fire():
 
         if _is_fire:
             if _is_webhook:
+                from reflex_test.component.send_webhook import SendWebhook
+
+                SendWebhook().send_notification(f"[TNR] {_title}", _url, "")
                 print(f"  -> Notify Webhook for {_title}")
             if _is_email:
                 from reflex_test.component.send_email import SendEmail
 
-                SendEmail().send_notification("TnReflex 通知！！！", _url, _title)
+                SendEmail().send_notification(f"[TNR] {_title}", _url, "")
                 print(f"  -> Notify Email for {_title}")
-            # service_remove_todo_item(str(item.id)) # Fireしたら削除
+
+            service_remove_todo_item(str(item.id))  # Fireしたら削除
