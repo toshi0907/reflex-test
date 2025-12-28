@@ -4,13 +4,13 @@ from email.mime.multipart import MIMEMultipart
 import os
 from dotenv import load_dotenv
 
-import tn_base_class
+from reflex_test.component.tn_base_class import BaseNotify
 
 # --- 設定項目 ---
 load_dotenv()
 
 
-class SendEmail(tn_base_class.BaseNotify):
+class SendEmail(BaseNotify):
     gmail_user = os.getenv("GMAIL_USER")
     gmail_password = os.getenv("GMAIL_PASSWORD")
     to_email = os.getenv("GMAIL_TO")

@@ -130,6 +130,7 @@ def check_task_fire():
     dbitems, dbitemnum = service_get_todo_items()
     for item in dbitems:
         _title = item.title
+        _url = item.url
         _dt_str = item.datetime
         _is_webhook = item.notify_webhook
         _is_email = item.notify_email
@@ -151,6 +152,8 @@ def check_task_fire():
             if _is_webhook:
                 print(f"  -> Notify Webhook for {_title}")
             if _is_email:
+                from reflex_test.component.send_email import SendEmail
+
+                SendEmail().send_notification("TnReflex 通知！！！", _url, _title)
                 print(f"  -> Notify Email for {_title}")
             # service_remove_todo_item(str(item.id)) # Fireしたら削除
-
