@@ -10,14 +10,26 @@ env_db_url = os.getenv("DATABASE_URL", "sqlite:///data/reflex.db")
 
 # ホスト名を環境変数から取得（デフォルトは従来の値）
 frontend_host = os.getenv("FRONTEND_HOST", "localhost:3000")
-backend_host = os.getenv("BACKEND_HOST", "localhost:8000")
+backend_host = os.getenv("BACKEND_HOST", None)
 
-config = rx.Config(
-    app_name="reflex_test",
-    db_url=env_db_url,
-    api_url=f"https://{backend_host}",  # SSL化したバックエンドURL
-    plugins=[
-        rx.plugins.SitemapPlugin(),
-        rx.plugins.TailwindV4Plugin(),
-    ],
-)
+# プラグインの設定
+plugins = [
+    rx.plugins.SitemapPlugin(),
+    rx.plugins.TailwindV4Plugin(),
+]
+
+# Configオブジェクトの作成
+config_kwargs = {
+    "app_name": "reflex_test",
+    "db_url": env_db_url,
+    "plugins": plugins,
+}
+
+# backend_host が設定されている場合のみ api_url を渡す
+# github codespaces では localhost:8000 ではうまく動作しないため
+if backend_host:
+    config_kwargs["api_url"] = backend_host  # backend_host が設定されている時のみ渡す
+
+config = rx.Config(**config_kwargs)
+
+# End of file
