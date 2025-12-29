@@ -30,7 +30,7 @@ def register_task(func: Callable):
     """
     _scheduler_registered_tasks.append(func)
     # print(f"[scheduler] registered task: {func.__name__}")
-    func()
+    # 登録時に即時実行はしない（インポート副作用を避ける）
     return func
 
 

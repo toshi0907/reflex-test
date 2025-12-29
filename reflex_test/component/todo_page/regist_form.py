@@ -25,6 +25,13 @@ def todo_page_regist_item() -> rx.Component:
                     width="100%",
                     minwidth="300px",
                 ),
+                rx.text_area(
+                    value=StateTodo.textDescription,
+                    on_change=StateTodo.update_textDescription,
+                    placeholder="Enter Description",
+                    width="100%",
+                    minwidth="300px",
+                ),
                 rx.input(
                     value=StateTodo.inputdatetime,
                     on_change=StateTodo.update_inputdatetime,

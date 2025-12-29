@@ -30,6 +30,8 @@ class StateTodo(rx.State):
     textErrorMessage: str = ""
     isErrorMessageVisible: bool = False
 
+    textDescription: str = ""
+
     def init_page(self):
         print("StateTodo init_page")
         self.get_todo_item()
@@ -71,6 +73,10 @@ class StateTodo(rx.State):
         self.textErrorMessage = value
         self.isErrorMessageVisible = True
 
+    def update_textDescription(self, value: str):
+        print(f"update_textDescription : {value}")
+        self.textDescription = value
+
     def add_todo_item(self):
         print("add_todo_item")
 
@@ -85,6 +91,7 @@ class StateTodo(rx.State):
             repeat_monthly=self.checkBoxRepeatMonthly,
             notify_webhook=self.checkBoxNotifyWebhook,
             notify_email=self.checkBoxNotifyEmail,
+            description=self.textDescription,
         )
 
         if not success:
@@ -118,6 +125,7 @@ class StateTodo(rx.State):
         self.checkBoxRepeatMonthly = item.repeat_monthly
         self.checkBoxNotifyWebhook = item.notify_webhook
         self.checkBoxNotifyEmail = item.notify_email
+        self.textDescription = item.description
 
     def clear_inputs(self):
         self.textHash = 0
@@ -131,3 +139,4 @@ class StateTodo(rx.State):
         self.checkBoxNotifyEmail = False
         self.isErrorMessageVisible = False
         self.textErrorMessage = ""
+        self.textDescription = ""

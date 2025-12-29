@@ -6,7 +6,7 @@ services:
       args:
         - REFLEX_FRONTEND_HOST=${FRONTEND_HOST}
         - REFLEX_BACKEND_HOST=${BACKEND_HOST}
-    container_name: reflex-app
+    container_name: ${REFLEX_CONTAINER_NAME:-reflex-app}
     ports:
       - "${FRONTEND_PORT}:3000"  # フロントエンド
       - "${BACKEND_PORT}:8000"   # バックエンドAPI
