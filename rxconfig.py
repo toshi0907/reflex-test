@@ -28,7 +28,7 @@ config_kwargs = {
 # backend_host が設定されている場合のみ api_url を渡す
 # github codespaces では localhost:8000 ではうまく動作しないため
 if backend_host:
-    config_kwargs["api_url"] = backend_host  # backend_host が設定されている時のみ渡す
+    config_kwargs["api_url"] = "https://" + backend_host  # backend_host が設定されている時のみ渡す
 
 config = rx.Config(**config_kwargs)
 
