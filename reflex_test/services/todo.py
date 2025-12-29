@@ -43,6 +43,7 @@ def add_todo_item(
     repeat_monthly: bool,
     notify_webhook: bool,
     notify_email: bool,
+    description: str = "",
 ) -> tuple[bool, str]:
     """
     Add or update a todo item in the database
@@ -57,6 +58,7 @@ def add_todo_item(
         repeat_monthly: Whether to repeat monthly
         notify_webhook: Whether to notify via webhook
         notify_email: Whether to notify via email
+        description: Description of the todo item
 
     Returns:
         tuple[bool, str]: (success, error_message)
@@ -89,6 +91,7 @@ def add_todo_item(
                     item_todo.repeat_monthly = repeat_monthly
                     item_todo.notify_webhook = notify_webhook
                     item_todo.notify_email = notify_email
+                    item_todo.description = description
                     session.add(item_todo)
 
                 session.commit()
@@ -106,6 +109,8 @@ def add_todo_item(
                     repeat_monthly=repeat_monthly,
                     notify_webhook=notify_webhook,
                     notify_email=notify_email,
+                    description=description,
+                    done=False,
                 )
                 session.add(new_item)
                 session.commit()

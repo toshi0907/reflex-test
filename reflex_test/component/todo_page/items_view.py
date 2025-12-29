@@ -22,7 +22,16 @@ def todo_page_view_items() -> rx.Component:
                     margin="0px",
                 ),
                 rx.cond(item.url != "", rx.text(f"URL: {item.url}"), None),
-                # rx.text(f"URL: {item.url}"),
+                rx.cond(
+                    item.description != "",
+                    rx.text_area(
+                        f"{item.description}",
+                        is_read_only=True,
+                        width="100%",
+                        minwidth="300px",
+                    ),
+                    None,
+                ),
                 rx.hstack(
                     rx.cond(
                         item.datetime != "", rx.text(f"{item.datetime}"), "**NoDate**"
@@ -36,7 +45,8 @@ def todo_page_view_items() -> rx.Component:
                     rx.cond(item.repeat_monthly, rx.text("Monthly"), None),
                     margin_left="15px",
                 ),
-
+                width="100%",
+                minwidth="300px",
                 # For debug
                 # rx.text(f"ID:{item.id}"),
                 # rx.text(f"Create at:{item.create_at}"),
