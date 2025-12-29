@@ -11,6 +11,8 @@ from typing import Callable, List
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from datetime import timedelta
+from calendar import monthrange
 
 _scheduler_registered_tasks: List[Callable] = []  # 登録されたタスクのリスト
 _scheduler: BackgroundScheduler | None = None
@@ -130,10 +132,7 @@ def check_task_fire():
     dbitems, dbitemnum = service_get_todo_items()
     for item in dbitems:
         _title = item.title
-        _url = item.url
         _dt_str = item.datetime
-        _is_webhook = item.notify_webhook
-        _is_email = item.notify_email
         _is_fire = False
         _dt = datetime.now(ZoneInfo("Asia/Tokyo"))
         try:
@@ -149,6 +148,9 @@ def check_task_fire():
         print(f"{_fire}[{_is_fire}] {_title} (datetime={_dt_str} / {_dt})")
 
         if _is_fire:
+            _is_webhook = item.notify_webhook
+            _is_email = item.notify_email
+            _url = item.url
             if _is_webhook:
                 from reflex_test.component.send_webhook import SendWebhook
 
@@ -160,4 +162,44 @@ def check_task_fire():
                 SendEmail().send_notification(f"[TNR] {_title}", _url, "")
                 print(f"  -> Notify Email for {_title}")
 
-            service_remove_todo_item(str(item.id))  # Fireしたら削除
+            # 次回実行日時を計算
+            if item.repeat_daily:
+                _dt_next = _dt + timedelta(days=1)
+            elif item.repeat_weekly:
+                _dt_next = _dt + timedelta(weeks=1)
+            elif item.repeat_monthly:
+                # 月単位で加算（末日を超えないように調整）
+                if _dt.month == 12:
+                    next_year = _dt.year + 1
+                    next_month = 1
+                else:
+                    next_year = _dt.year
+                    next_month = _dt.month + 1
+                # 月単位で加算（同じ日付で翌月）
+                if _dt.month == 12:
+                    _dt_next = _dt.replace(year=_dt.year + 1, month=1)
+                else:
+                    _dt_next = _dt.replace(month=_dt.month + 1)
+
+                # 翌月の末日を取得
+                last_day = monthrange(next_year, next_month)[1]
+                next_day = min(_dt.day, last_day)  # 元の日付と末日の小さい方を選択
+
+                _dt_next = _dt.replace(year=next_year, month=next_month, day=next_day)
+            _dt_next_str = _dt_next.strftime("%Y-%m-%dT%H:%M")
+
+            # Fireしたら削除
+            service_remove_todo_item(str(item.id))
+
+            # Todoアイテムを再登録して削除する
+            service_add_todo_item(
+                text_hash=0,
+                title=item.title,
+                url=item.url,
+                datetime_str=_dt_next_str,
+                repeat_daily=item.repeat_daily,
+                repeat_weekly=item.repeat_weekly,
+                repeat_monthly=item.repeat_monthly,
+                notify_webhook=item.notify_webhook,
+                notify_email=item.notify_email,
+            )
