@@ -27,6 +27,10 @@ COPY reflex_test/ ./reflex_test/
 # Reflexアプリケーションを初期化
 RUN reflex init
 
+# エントリポイントスクリプトを追加
+COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 ARG REFLEX_FRONTEND_HOST
 ARG REFLEX_BACKEND_HOST
 
@@ -60,4 +64,5 @@ EOF
 EXPOSE 3000 8000
 
 # アプリケーションを起動（開発モードで起動）
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["reflex", "run", "--loglevel", "info"]
