@@ -1,6 +1,7 @@
 """Todo関連のデータベースモデル"""
 
 import reflex as rx
+from typing import Optional
 
 
 class DBTodoListItem(rx.Model, table=True):
@@ -11,6 +12,7 @@ class DBTodoListItem(rx.Model, table=True):
     update_at: str
     title: str
     url: str
+    description: Optional[str] = None
     datetime: str
 
     repeat_daily: bool
