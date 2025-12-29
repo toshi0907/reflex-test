@@ -163,10 +163,13 @@ def check_task_fire():
                 print(f"  -> Notify Email for {_title}")
 
             # 次回実行日時を計算
+            _dt_next_str = ""
             if item.repeat_daily:
                 _dt_next = _dt + timedelta(days=1)
+                _dt_next_str = _dt_next.strftime("%Y-%m-%dT%H:%M")
             elif item.repeat_weekly:
                 _dt_next = _dt + timedelta(weeks=1)
+                _dt_next_str = _dt_next.strftime("%Y-%m-%dT%H:%M")
             elif item.repeat_monthly:
                 # 月単位で加算（末日を超えないように調整）
                 if _dt.month == 12:
@@ -186,20 +189,21 @@ def check_task_fire():
                 next_day = min(_dt.day, last_day)  # 元の日付と末日の小さい方を選択
 
                 _dt_next = _dt.replace(year=next_year, month=next_month, day=next_day)
-            _dt_next_str = _dt_next.strftime("%Y-%m-%dT%H:%M")
+                _dt_next_str = _dt_next.strftime("%Y-%m-%dT%H:%M")
+
+            if item.repeat_daily or item.repeat_weekly or item.repeat_monthly:
+                # Todoアイテムを再登録して削除する
+                service_add_todo_item(
+                    text_hash=0,
+                    title=item.title,
+                    url=item.url,
+                    datetime_str=_dt_next_str,
+                    repeat_daily=item.repeat_daily,
+                    repeat_weekly=item.repeat_weekly,
+                    repeat_monthly=item.repeat_monthly,
+                    notify_webhook=item.notify_webhook,
+                    notify_email=item.notify_email,
+                )
 
             # Fireしたら削除
             service_remove_todo_item(str(item.id))
-
-            # Todoアイテムを再登録して削除する
-            service_add_todo_item(
-                text_hash=0,
-                title=item.title,
-                url=item.url,
-                datetime_str=_dt_next_str,
-                repeat_daily=item.repeat_daily,
-                repeat_weekly=item.repeat_weekly,
-                repeat_monthly=item.repeat_monthly,
-                notify_webhook=item.notify_webhook,
-                notify_email=item.notify_email,
-            )
