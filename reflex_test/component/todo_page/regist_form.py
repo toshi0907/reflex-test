@@ -56,17 +56,17 @@ def todo_page_regist_item() -> rx.Component:
                 rx.hstack(
                     rx.text("Repeat", width="100px", margin_left="20px"),
                     rx.checkbox(
-                        "Daily",
+                        "Daily①",
                         checked=StateTodo.checkBoxRepeatDayly,
                         on_change=StateTodo.update_checkBoxRepeatDayly,
                     ),
                     rx.checkbox(
-                        "Weekly",
+                        "Weekly⑦",
                         checked=StateTodo.checkBoxRepeatWeekly,
                         on_change=StateTodo.update_checkBoxRepeatWeekly,
                     ),
                     rx.checkbox(
-                        "Monthly",
+                        "Monthly㉚",
                         checked=StateTodo.checkBoxRepeatMonthly,
                         on_change=StateTodo.update_checkBoxRepeatMonthly,
                     ),
