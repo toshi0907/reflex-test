@@ -100,7 +100,7 @@ def sample_task():
     - 定期レポート生成
     """
     _now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[scheduler:sample_task] tick at {_now}Z")
+    # print(f"[scheduler:sample_task] tick at {_now}Z")
 
 
 @register_task
@@ -109,7 +109,7 @@ def health_check_task():
     ヘルスチェックタスク - スケジューラが正常動作していることを確認
     """
     _now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[scheduler:health_check] scheduler is running at {_now}Z")
+    # print(f"[scheduler:health_check] scheduler is running at {_now}Z")
 
 
 @register_task
@@ -118,7 +118,7 @@ def check_task_fire():
     タスク実行確認用タスク - スケジューラがタスクを実行していることを確認
     """
     _now = datetime.now(ZoneInfo("Asia/Tokyo"))
-    print(f"[scheduler:check_task_fire] task fired at {_now}Z")
+    # print(f"[scheduler:check_task_fire] task fired at {_now}Z")
 
     from reflex_test.services.todo import (
         get_todo_items as service_get_todo_items,
@@ -145,7 +145,7 @@ def check_task_fire():
                 _fire = "FIRE!!!"
         except Exception as e:
             _fire = "ERROR!!"
-        print(f"{_fire}[{_is_fire}] {_title} (datetime={_dt_str} / {_dt})")
+        # print(f"{_fire}[{_is_fire}] {_title} (datetime={_dt_str} / {_dt})")
 
         if _is_fire:
             _is_webhook = item.notify_webhook
@@ -155,11 +155,13 @@ def check_task_fire():
                 from reflex_test.component.send_webhook import SendWebhook
 
                 SendWebhook().send_notification(f"[TNR] {_title}", _url, "")
+                print(f"{_fire}[{_is_fire}] {_title} (datetime={_dt_str} / {_dt})")
                 print(f"  -> Notify Webhook for {_title}")
             if _is_email:
                 from reflex_test.component.send_email import SendEmail
 
                 SendEmail().send_notification(f"[TNR] {_title}", _url, "")
+                print(f"{_fire}[{_is_fire}] {_title} (datetime={_dt_str} / {_dt})")
                 print(f"  -> Notify Email for {_title}")
 
             # 次回実行日時を計算

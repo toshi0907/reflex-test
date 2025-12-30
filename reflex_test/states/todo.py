@@ -33,51 +33,51 @@ class StateTodo(rx.State):
     textDescription: str = ""
 
     def init_page(self):
-        print("StateTodo init_page")
+        # print("StateTodo init_page")
         self.get_todo_item()
 
     def update_inputStrTitle(self, value: str):
-        print(f"update_inputStrTitle : {value}")
+        # print(f"update_inputStrTitle : {value}")
         self.inputStrTitle = value
 
     def update_inputStrURL(self, value: str):
-        print(f"update_inputStrURL : {value}")
+        # print(f"update_inputStrURL : {value}")
         self.inputStrURL = value
         # URLの先頭にhttp://またはhttps://がない場合、エラーメッセージを表示
         if not (value.startswith("http://") or value.startswith("https://")):
             self.update_textErrorMessage("URL must start with http:// or https://.")
 
     def update_inputdatetime(self, value: str):
-        print(f"update_inputdatetime : {value}")
+        # print(f"update_inputdatetime : {value}")
         self.inputdatetime = value
 
     def update_checkBoxRepeatDayly(self, value: bool):
-        print(f"update_checkBoxRepeatDayly : {value}")
+        # print(f"update_checkBoxRepeatDayly : {value}")
         self.checkBoxRepeatDayly = value
 
     def update_checkBoxRepeatWeekly(self, value: bool):
-        print(f"update_checkBoxRepeatWeekly : {value}")
+        # print(f"update_checkBoxRepeatWeekly : {value}")
         self.checkBoxRepeatWeekly = value
 
     def update_checkBoxRepeatMonthly(self, value: bool):
-        print(f"update_checkBoxRepeatMonthly : {value}")
+        # print(f"update_checkBoxRepeatMonthly : {value}")
         self.checkBoxRepeatMonthly = value
 
     def update_checkBoxNotifyWebhook(self, value: bool):
-        print(f"update_checkBoxNotifyWebhook : {value}")
+        # print(f"update_checkBoxNotifyWebhook : {value}")
         self.checkBoxNotifyWebhook = value
 
     def update_checkBoxNotifyEmail(self, value: bool):
-        print(f"update_checkBoxNotifyEmail : {value}")
+        # print(f"update_checkBoxNotifyEmail : {value}")
         self.checkBoxNotifyEmail = value
 
     def update_textErrorMessage(self, value: str):
-        print(f"update_textErrorMessage : {value}")
+        # print(f"update_textErrorMessage : {value}")
         self.textErrorMessage = value
         self.isErrorMessageVisible = True
 
     def update_textDescription(self, value: str):
-        print(f"update_textDescription : {value}")
+        # print(f"update_textDescription : {value}")
         self.textDescription = value
 
     def add_todo_item(self):
