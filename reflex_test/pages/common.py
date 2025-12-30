@@ -11,7 +11,7 @@ def CommonHeader(title: str) -> rx.Component:
     else:
         title_disp = "TN App : " + title
     return rx.vstack(
-        rx.heading(title_disp),
+        rx.heading(title_disp, as_="h1"),
         rx.hstack(
             rx.link("TopPage", href="/"),
             rx.link("TodoPage", href="/todo_page"),
