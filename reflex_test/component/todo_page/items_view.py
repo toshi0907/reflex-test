@@ -30,6 +30,13 @@ def todo_page_view_items() -> rx.Component:
                             rx.cond(item.repeat_daily, rx.text("①"), None),
                             rx.cond(item.repeat_weekly, rx.text("⑦"), None),
                             rx.cond(item.repeat_monthly, rx.text("㉚"), None),
+                            rx.cond(
+                                (~item.repeat_daily)
+                                & (~item.repeat_weekly)
+                                & (~item.repeat_monthly),
+                                rx.text("Once"),
+                                None,
+                            ),
                             rx.text("】"),
                             margin_left="15px",
                         ),

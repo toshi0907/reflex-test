@@ -71,7 +71,7 @@ def add_todo_item(
         return False, "At least one notification method is required."
 
     # URLの形式確認
-    if not (url.startswith("http://") or url.startswith("https://")):
+    if not (url.startswith("http://") or url.startswith("https://")) and url != "":
         return False, "URL must start with http:// or https://."
 
     # Get current datetime in JST
