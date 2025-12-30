@@ -37,8 +37,8 @@ def todo_page_view_items() -> rx.Component:
                         item.datetime != "", rx.text(f"{item.datetime}"), "**NoDate**"
                     ),
                     rx.text("/"),
-                    rx.cond(item.notify_webhook, rx.text("WH"), None),
-                    rx.cond(item.notify_email, rx.text("ML"), None),
+                    rx.cond(item.notify_webhook, rx.text("🔗"), None),
+                    rx.cond(item.notify_email, rx.text("✉"), None),
                     rx.text("/"),
                     rx.cond(item.repeat_daily, rx.text("Daily"), None),
                     rx.cond(item.repeat_weekly, rx.text("Weekly"), None),
