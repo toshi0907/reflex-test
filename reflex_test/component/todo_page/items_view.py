@@ -30,6 +30,13 @@ def todo_page_view_items() -> rx.Component:
                             rx.cond(item.repeat_daily, rx.text("①"), None),
                             rx.cond(item.repeat_weekly, rx.text("⑦"), None),
                             rx.cond(item.repeat_monthly, rx.text("㉚"), None),
+                            rx.cond(
+                                (~item.repeat_daily)
+                                & (~item.repeat_weekly)
+                                & (~item.repeat_monthly),
+                                rx.text("Once"),
+                                None,
+                            ),
                             rx.text("】"),
                             margin_left="15px",
                         ),
@@ -47,11 +54,16 @@ def todo_page_view_items() -> rx.Component:
                 ),
                 rx.cond(
                     (item.description != "") & (item.description is not None),
-                    rx.text_area(
-                        f"{item.description}",
-                        is_read_only=True,
-                        width="100%",
-                        minwidth="300px",
+                    rx.foreach(
+                        item.description.split("\n"),
+                        lambda line: rx.text(
+                            f"{line}",
+                            margin_left="15px",
+                            padding_top="0px",
+                            padding_bottom="0px",
+                            margin_top="0px",
+                            margin_bottom="0px",
+                        ),
                     ),
                     None,
                 ),
