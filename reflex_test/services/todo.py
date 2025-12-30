@@ -43,7 +43,7 @@ def add_todo_item(
     repeat_monthly: bool,
     notify_webhook: bool,
     notify_email: bool,
-    description: str = "",
+    description: str,
 ) -> tuple[bool, str]:
     """
     Add or update a todo item in the database

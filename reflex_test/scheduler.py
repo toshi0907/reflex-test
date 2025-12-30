@@ -203,6 +203,7 @@ def check_task_fire():
                     repeat_monthly=item.repeat_monthly,
                     notify_webhook=item.notify_webhook,
                     notify_email=item.notify_email,
+                    description=item.description or "",
                 )
 
             # Fireしたら削除
