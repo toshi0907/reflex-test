@@ -22,7 +22,7 @@ class UserState(rx.State):
 # 公式（？）ドキュメント
 https://reflex.dev/docs/library/
 
-# requrements.txtの更新
+# requirements.txtの更新
 
 ```bash
 pip freeze > requirements.txt
