@@ -5,7 +5,11 @@ from sqlalchemy import create_engine, inspect
 import asyncio
 
 from rxconfig import config
-from reflex_test.pages import index, todo_page
+from reflex_test.pages import (
+    index,
+    todo_page,
+    bookmark_page,
+)
 from reflex_test.states import StateTodo
 
 
@@ -35,6 +39,11 @@ app.add_page(
     title="TNApp : TodoPage",
     route="/todo_page",
     on_load=StateTodo.init_page(),
+)
+app.add_page(
+    bookmark_page,
+    title="TNApp : BookmarkPage",
+    route="/bookmark_page",
 )
 
 # Initialize database on startup

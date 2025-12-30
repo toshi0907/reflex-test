@@ -15,6 +15,7 @@ def CommonHeader(title: str) -> rx.Component:
         rx.hstack(
             rx.link("TopPage", href="/"),
             rx.link("TodoPage", href="/todo_page"),
+            rx.link("BookmarkPage", href="/bookmark_page"),
         ),
         rx.divider(),
         rx.spacer(height="20px"),
