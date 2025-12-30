@@ -1,11 +1,11 @@
 """Index page"""
 
 import reflex as rx
-import reflex_test.pages.commom as commom
+import reflex_test.pages.common as common
 
 
 def index() -> rx.Component:
     """トップページ"""
     return rx.container(
-        commom.CommonHeader(title=""),
+        common.CommonHeader(title=""),
     )
