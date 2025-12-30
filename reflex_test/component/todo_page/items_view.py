@@ -38,7 +38,7 @@ def todo_page_view_items() -> rx.Component:
                 ),
                 rx.cond(item.url != "", rx.text(f"URL: {item.url}"), None),
                 rx.cond(
-                    item.description != "",
+                    (item.description != "") & (item.description is not None),
                     rx.text_area(
                         f"{item.description}",
                         is_read_only=True,
