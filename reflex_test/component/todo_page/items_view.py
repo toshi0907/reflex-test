@@ -17,9 +17,24 @@ def todo_page_view_items() -> rx.Component:
                     rx.text.strong(
                         f"・{item.title}",
                         on_click=lambda: StateTodo.update_item(item),
-                        margin="0px",
                     ),
-                    margin="0px",
+                    rx.cond(
+                        item.datetime != "",
+                        rx.hstack(
+                            rx.text("【"),
+                            rx.text(f"{item.datetime}"),
+                            rx.text("/"),
+                            rx.cond(item.notify_webhook, rx.text("🔗"), None),
+                            rx.cond(item.notify_email, rx.text("✉"), None),
+                            rx.text("/"),
+                            rx.cond(item.repeat_daily, rx.text("①"), None),
+                            rx.cond(item.repeat_weekly, rx.text("⑦"), None),
+                            rx.cond(item.repeat_monthly, rx.text("㉚"), None),
+                            rx.text("】"),
+                            margin_left="15px",
+                        ),
+                        rx.text("【---】"),
+                    ),
                 ),
                 rx.cond(item.url != "", rx.text(f"URL: {item.url}"), None),
                 rx.cond(
@@ -32,25 +47,13 @@ def todo_page_view_items() -> rx.Component:
                     ),
                     None,
                 ),
-                rx.hstack(
-                    rx.cond(
-                        item.datetime != "", rx.text(f"{item.datetime}"), "**NoDate**"
-                    ),
-                    rx.text("/"),
-                    rx.cond(item.notify_webhook, rx.text("🔗"), None),
-                    rx.cond(item.notify_email, rx.text("✉"), None),
-                    rx.text("/"),
-                    rx.cond(item.repeat_daily, rx.text("①"), None),
-                    rx.cond(item.repeat_weekly, rx.text("⑦"), None),
-                    rx.cond(item.repeat_monthly, rx.text("㉚"), None),
-                    margin_left="15px",
-                ),
-                width="100%",
-                minwidth="300px",
                 # For debug
                 # rx.text(f"ID:{item.id}"),
                 # rx.text(f"Create at:{item.create_at}"),
                 # rx.text(f"Update at:{item.update_at}"),
+
+                width="100%",
+                minwidth="300px",
             ),
         ),
         width="100%",
