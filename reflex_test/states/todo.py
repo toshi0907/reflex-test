@@ -43,6 +43,9 @@ class StateTodo(rx.State):
     def update_inputStrURL(self, value: str):
         print(f"update_inputStrURL : {value}")
         self.inputStrURL = value
+        # URLの先頭にhttp://またはhttps://がない場合、エラーメッセージを表示
+        if not (value.startswith("http://") or value.startswith("https://")):
+            self.update_textErrorMessage("URL must start with http:// or https://.")
 
     def update_inputdatetime(self, value: str):
         print(f"update_inputdatetime : {value}")

@@ -36,9 +36,17 @@ def todo_page_view_items() -> rx.Component:
                         rx.text("【---】"),
                     ),
                 ),
-                rx.cond(item.url != "", rx.text(f"URL: {item.url}"), None),
                 rx.cond(
-                    item.description != "",
+                    item.url != "",
+                    rx.link(
+                        f"URL: {item.url}",
+                        href=item.url,
+                        is_external=True,
+                    ),
+                    None,
+                ),
+                rx.cond(
+                    (item.description != "") & (item.description is not None),
                     rx.text_area(
                         f"{item.description}",
                         is_read_only=True,
@@ -51,7 +59,6 @@ def todo_page_view_items() -> rx.Component:
                 # rx.text(f"ID:{item.id}"),
                 # rx.text(f"Create at:{item.create_at}"),
                 # rx.text(f"Update at:{item.update_at}"),
-
                 width="100%",
                 minwidth="300px",
             ),
