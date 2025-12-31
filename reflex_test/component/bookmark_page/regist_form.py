@@ -37,15 +37,23 @@ def bookmark_page_regist_item() -> rx.Component:
                 minwidth="300px",
                 width="100%",
             ),
+            rx.button("Regist"),
+            minwidth="300px",
+            width="100%",
+        ),
+    )  # pyright: ignore[reportReturnType]
+
+
+def bookmark_category_regist_item() -> rx.Component:
+    """bookmarkカテゴリ登録フォーム"""
+    return (
+        rx.vstack(
             rx.heading("Add Category", as_="h2"),
             rx.input(
                 placeholder="CategoryName",
-                # value=StateBookmark.form_category_name,
-                # on_change=StateBookmark.set_form_category_name,
                 minwidth="300px",
                 width="100%",
             ),
-            minwidth="300px",
-            width="100%",
+            rx.button("Regist"),
         ),
     )  # pyright: ignore[reportReturnType]
