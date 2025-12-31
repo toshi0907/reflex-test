@@ -13,28 +13,28 @@ def todo_page_regist_item() -> rx.Component:
                 rx.text(f"ID[{StateTodo.textHash}]"),
                 rx.input(
                     value=StateTodo.inputStrTitle,
-                    on_change=StateTodo.update_inputStrTitle,
+                    on_change=StateTodo.update_inputStrTitle, # type: ignore
                     placeholder="Enter Item Title",
                     width="100%",
                     minwidth="300px",
                 ),
                 rx.input(
                     value=StateTodo.inputStrURL,
-                    on_change=StateTodo.update_inputStrURL,
+                    on_change=StateTodo.update_inputStrURL, # type: ignore
                     placeholder="Enter URL",
                     width="100%",
                     minwidth="300px",
                 ),
                 rx.text_area(
                     value=StateTodo.textDescription,
-                    on_change=StateTodo.update_textDescription,
+                    on_change=StateTodo.update_textDescription, # type: ignore
                     placeholder="Enter Description",
                     width="100%",
                     minwidth="300px",
                 ),
                 rx.input(
                     value=StateTodo.inputdatetime,
-                    on_change=StateTodo.update_inputdatetime,
+                    on_change=StateTodo.update_inputdatetime, # type: ignore
                     placeholder="Select Date and Time",
                     width="100%",
                     minwidth="300px",
@@ -45,12 +45,12 @@ def todo_page_regist_item() -> rx.Component:
                     rx.checkbox(
                         "Webhook​🔗",
                         checked=StateTodo.checkBoxNotifyWebhook,
-                        on_change=StateTodo.update_checkBoxNotifyWebhook,
+                        on_change=StateTodo.update_checkBoxNotifyWebhook, # type: ignore
                     ),
                     rx.checkbox(
                         "Email​✉️",
                         checked=StateTodo.checkBoxNotifyEmail,
-                        on_change=StateTodo.update_checkBoxNotifyEmail,
+                        on_change=StateTodo.update_checkBoxNotifyEmail, # type: ignore
                     ),
                 ),
                 rx.hstack(
@@ -58,31 +58,31 @@ def todo_page_regist_item() -> rx.Component:
                     rx.checkbox(
                         "Daily①",
                         checked=StateTodo.checkBoxRepeatDayly,
-                        on_change=StateTodo.update_checkBoxRepeatDayly,
+                        on_change=StateTodo.update_checkBoxRepeatDayly, # type: ignore
                     ),
                     rx.checkbox(
                         "Weekly⑦",
                         checked=StateTodo.checkBoxRepeatWeekly,
-                        on_change=StateTodo.update_checkBoxRepeatWeekly,
+                        on_change=StateTodo.update_checkBoxRepeatWeekly, # type: ignore
                     ),
                     rx.checkbox(
                         "Monthly㉚",
                         checked=StateTodo.checkBoxRepeatMonthly,
-                        on_change=StateTodo.update_checkBoxRepeatMonthly,
+                        on_change=StateTodo.update_checkBoxRepeatMonthly, # type: ignore
                     ),
                 ),
                 rx.hstack(
                     rx.button(
                         "Add Item",
-                        on_click=lambda: StateTodo.add_todo_item(),
+                        on_click=lambda: StateTodo.add_todo_item(), # type: ignore
                     ),
                     rx.button(
                         "Clear",
-                        on_click=lambda: StateTodo.clear_inputs(),
+                        on_click=lambda: StateTodo.clear_inputs(), # type: ignore
                     ),
                     rx.button(
                         "Done",
-                        on_click=lambda: StateTodo.remove_todo_item(StateTodo.textHash),
+                        on_click=lambda: StateTodo.remove_todo_item(StateTodo.textHash), # type: ignore
                     ),
                     width="100%",
                 ),
@@ -97,4 +97,4 @@ def todo_page_regist_item() -> rx.Component:
                 width="100%",
             ),
         ),
-    )
+    ) # type: ignore
