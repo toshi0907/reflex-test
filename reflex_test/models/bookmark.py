@@ -4,7 +4,7 @@ import reflex as rx
 
 
 class DBBookmarkListItem(rx.Model, table=True):
-    """データベースのテーブル定義"""
+    """データベースのテーブル定義 : ブックマーク"""
 
     hash: int
     create_at: str
@@ -14,4 +14,14 @@ class DBBookmarkListItem(rx.Model, table=True):
     description: str
     category_id: int
 
-    removed : bool = False
+    removed: bool = False
+
+
+class DBBookmarkCategoryListItem(rx.Model, table=True):
+    """データベースのテーブル定義 : カテゴリ"""
+
+    create_at: str
+    update_at: str
+    category_name: str
+
+    removed: bool = False

@@ -1,7 +1,10 @@
 """Bookmark service layer for database operations"""
 
 import reflex as rx
-from reflex_test.models import DBBookmarkListItem
+from reflex_test.models import (
+    DBBookmarkListItem,
+    DBBookmarkCategoryListItem,
+)
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -93,3 +96,79 @@ def remove_bookmark_item(item_id: str) -> tuple[bool, str]:
         return True, ""
     except Exception as e:
         return False, f"Error removing bookmark item: {str(e)}"
+
+
+def get_category_items() -> tuple[list[DBBookmarkCategoryListItem], int]:
+    with rx.session() as session:
+        items = session.exec(
+            DBBookmarkCategoryListItem.select().where(
+                DBBookmarkCategoryListItem.removed == False
+            )
+        ).all()
+        count = len(items)
+    return items, count
+
+
+def get_category_item_all(hash: int) -> DBBookmarkCategoryListItem | None:
+    with rx.session() as session:
+        item = session.exec(DBBookmarkCategoryListItem.select()).all()
+    return item
+
+
+def add_category_item(
+    text_hash: int,
+    category_name: str,
+) -> tuple[bool, str]:
+
+    # Get current datetime in JST
+    now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
+
+    try:
+        with rx.session() as session:
+            if text_hash != 0:
+                # Update existing item
+                item_categorys = session.exec(
+                    DBBookmarkCategoryListItem.select().where(
+                        DBBookmarkCategoryListItem.id == text_hash
+                    )
+                ).all()
+
+                for item_category in item_categorys:
+                    item_category.update_at = now
+                    item_category.category_name = category_name
+                    session.add(item_category)
+
+                session.commit()
+            else:
+                # Create new item
+                new_item = DBBookmarkCategoryListItem(
+                    create_at=now,
+                    update_at=now,
+                    category_name=category_name,
+                )
+                session.add(new_item)
+                session.commit()
+
+        return True, ""
+    except Exception as e:
+        return False, f"Error adding category item: {str(e)}"
+
+
+def remove_category_item(item_id: str) -> tuple[bool, str]:
+    try:
+        with rx.session() as session:
+            item_categorys = session.exec(
+                DBBookmarkCategoryListItem.select().where(
+                    DBBookmarkCategoryListItem.id == item_id
+                )
+            ).all()
+
+            for item_category in item_categorys:
+                item_category.removed = True
+                session.add(item_category)
+
+            session.commit()
+
+        return True, ""
+    except Exception as e:
+        return False, f"Error removing category item: {str(e)}"
