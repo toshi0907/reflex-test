@@ -30,10 +30,15 @@ def upgrade() -> None:
         op.drop_table("dbbookmarkcategorylistitem")
     if "dbbookmarklistitem" in existing_tables:
         op.drop_table("dbbookmarklistitem")
-    with op.batch_alter_table("dbtodolistitem", schema=None) as batch_op:
-        batch_op.add_column(
-            sa.Column("description", sqlmodel.sql.sqltypes.AutoString(), nullable=True)
-        )
+    
+    # Only add description column if table exists and column doesn't exist
+    if "dbtodolistitem" in existing_tables:
+        existing_columns = set(col["name"] for col in inspector.get_columns("dbtodolistitem"))
+        if "description" not in existing_columns:
+            with op.batch_alter_table("dbtodolistitem", schema=None) as batch_op:
+                batch_op.add_column(
+                    sa.Column("description", sqlmodel.sql.sqltypes.AutoString(), nullable=True)
+                )
 
     # ### end Alembic commands ###
 
