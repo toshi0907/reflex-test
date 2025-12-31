@@ -21,7 +21,11 @@ def _init_db():
         inspector = inspect(engine)
 
         # テーブルが存在しない場合は作成
-        if "dbtodolistitem" not in inspector.get_table_names():
+        if (
+            "dbtodolistitem" not in inspector.get_table_names()
+            or "dbbookmarklistitem" not in inspector.get_table_names()
+            or "dbbookmarkcategorylistitem" not in inspector.get_table_names()
+        ):
             print("Creating DBTodoListItem table...")
             rx.Model.metadata.create_all(engine)
             print("DBTodoListItem table created successfully.")
