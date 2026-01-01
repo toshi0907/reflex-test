@@ -123,6 +123,17 @@ def add_category_item(
     if not category_name:
         return False, "Category name is required."
 
+    # カテゴリ名の重複確認
+    with rx.session() as session:
+        existing_items = session.exec(
+            DBBookmarkCategoryListItem.select().where(
+                DBBookmarkCategoryListItem.category_name == category_name,
+                DBBookmarkCategoryListItem.removed == False,
+            )
+        ).all()
+        if existing_items:
+            return False, "Category name already exists."
+
     # Get current datetime in JST
     now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
 

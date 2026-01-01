@@ -31,6 +31,9 @@ class StateBookmark(rx.State):
     dbitems: list[DBBookmarkListItem] = []
     dbitemnum: int = 0
 
+    dbitemsCategory: list[DBBookmarkCategoryListItem] = []
+    dbitemnumCategory: int = 0
+
     textErrorMessage: str = ""
     isErrorMessageVisible: bool = False
 
@@ -57,6 +60,12 @@ class StateBookmark(rx.State):
         print(f"update_selectStrCategoryItem : {value}")
         self.selectStrCategoryItem = value
 
+        # カテゴリ名からカテゴリIDを取得
+        self.inputCategoryID = 0
+        for item in self.dbitemsCategory:
+            if item.category_name == value:
+                self.inputCategoryID = item.id  # type: ignore
+
     def update_textErrorMessage(self, value: str):
         # print(f"update_textErrorMessage : {value}")
         self.textErrorMessage = value
@@ -64,6 +73,7 @@ class StateBookmark(rx.State):
 
     def get_bookmark_item(self):
         self.dbitems, self.dbitemnum = service_get_bookmark_items()
+        self.dbitemsCategory, self.dbitemnumCategory = service_get_category_items()
 
     def add_bookmark_item(self):
         print("add_bookmark_item")
@@ -96,7 +106,7 @@ class StateBookmark(rx.State):
 
     def update_item(self, item: DBBookmarkListItem):
         print("update_item")
-        self.textHash = item.id
+        self.textHash = item.id  # type: ignore
         self.inputStrTitle = item.title
         self.inputStrURL = item.url
         self.inputStrDescription = item.description
@@ -120,20 +130,36 @@ class StateBookmarkCategory(rx.State):
     dbitems: list[DBBookmarkCategoryListItem] = []
     dbitemnum: int = 0
 
-    listCategoryItems: list[str] = [""]
+    listCategoryItems: list[str] = []
 
     textErrorMessage: str = ""
     isErrorMessageVisible: bool = False
 
+    has_category_items: bool = False
+
+    def init_page(self):
+        # print("StateBookmark init_page")
+        self.get_category_item()
+
     def update_inputStrCategoryName(self, value: str):
-        print(f"update_inputStrCategoryName : {value}")
+        # print(f"update_inputStrCategoryName : {value}")
         self.inputStrCategoryName = value
+        self.get_category_item()
 
     def get_category_item(self):
         self.dbitems, self.dbitemnum = service_get_category_items()
-        self.listCategoryItems = [""]
+        self.listCategoryItems = []
+        if len(self.dbitems) == 0:
+            self.listCategoryItems = ["N/A"]
+            self.has_category_items = False
+            return
+
         for item in self.dbitems:
-            self.listCategoryItems.append(item.category_name)
+            if item.category_name != "":
+                # print(f"category_item: {item.category_name}")
+                self.listCategoryItems.append(item.category_name)
+        self.has_category_items = True
+        pass
 
     def add_category_item(self):
         print("add_category_item")
@@ -163,7 +189,6 @@ class StateBookmarkCategory(rx.State):
         self.textHash = 0
         self.inputStrCategoryName = ""
         self.isErrorMessageVisible = False
-
 
     def update_textErrorMessage(self, value: str):
         # print(f"update_textErrorMessage : {value}")

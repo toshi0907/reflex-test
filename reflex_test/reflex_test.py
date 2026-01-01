@@ -10,14 +10,18 @@ from reflex_test.pages import (
     todo_page,
     bookmark_page,
 )
-from reflex_test.states import StateTodo
+from reflex_test.states import (
+    StateTodo,
+    StateBookmark,
+    StateBookmarkCategory,
+)
 
 
 # データベース初期化
 def _init_db():
     """アプリケーション起動時にデータベーステーブルを初期化"""
     try:
-        engine = create_engine(config.db_url)
+        engine = create_engine(config.db_url) # type: ignore
         inspector = inspect(engine)
 
         # テーブルが存在しない場合は作成
@@ -42,12 +46,13 @@ app.add_page(
     todo_page,
     title="TNApp : TodoPage",
     route="/todo_page",
-    on_load=StateTodo.init_page(),
+    on_load=StateTodo.init_page(),  # type: ignore
 )
 app.add_page(
     bookmark_page,
     title="TNApp : BookmarkPage",
     route="/bookmark_page",
+    on_load=[StateBookmark.init_page(), StateBookmarkCategory.init_page()],  # type: ignore
 )
 
 # Initialize database on startup
@@ -57,6 +62,7 @@ _init_db()
 # バックエンドサーバーが起動した後にスケジューラーを開始するため、
 # rxconfig.pyではなくここで呼び出す
 from reflex_test.scheduler import start_scheduler
+
 try:
     start_scheduler()
 except Exception as e:
