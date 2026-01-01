@@ -34,13 +34,16 @@ def bookmark_page_regist_item() -> rx.Component:
                 minwidth="300px",
                 width="100%",
             ),
-            rx.select(
-                StateBookmark.selectCategoryItems,
-                placeholder="Category",
-                value=StateBookmark.selectStrCategoryItem,
-                on_change=StateBookmark.update_selectStrCategoryItem,  # type: ignore
-                minwidth="300px",
-                width="100%",
+            rx.cond(
+                StateBookmarkCategory.has_category_items,  # type: ignore
+                rx.select(
+                    StateBookmarkCategory.listCategoryItems,
+                    placeholder="Category",
+                    value=StateBookmark.selectStrCategoryItem,
+                    on_change=StateBookmark.update_selectStrCategoryItem,  # type: ignore
+                    minwidth="300px",
+                    width="100%",
+                ),
             ),
             rx.button(
                 "Regist",
