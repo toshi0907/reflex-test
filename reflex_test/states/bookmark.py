@@ -2,8 +2,8 @@
 
 import reflex as rx
 from reflex_test.models import (
-    DBBookmarkListItem,
-    DBBookmarkCategoryListItem,
+    DBBookmarkListItems,
+    DBBookmarkCategoryListItems,
 )
 from reflex_test.services.bookmark import (
     get_bookmark_items as service_get_bookmark_items,
@@ -28,10 +28,10 @@ class StateBookmark(rx.State):
     selectStrCategoryItem: str = ""
     inputCategoryID: int = 0
 
-    dbitems: list[DBBookmarkListItem] = []
+    dbitems: list[DBBookmarkListItems] = []
     dbitemnum: int = 0
 
-    dbitemsCategory: list[DBBookmarkCategoryListItem] = []
+    dbitemsCategory: list[DBBookmarkCategoryListItems] = []
     dbitemnumCategory: int = 0
 
     textErrorMessage: str = ""
@@ -104,7 +104,7 @@ class StateBookmark(rx.State):
 
         self.get_bookmark_item()
 
-    def update_item(self, item: DBBookmarkListItem):
+    def update_item(self, item: DBBookmarkListItems):
         print("update_item")
         self.textHash = item.id  # type: ignore
         self.inputStrTitle = item.title
@@ -127,7 +127,7 @@ class StateBookmarkCategory(rx.State):
     textHash: int = 0
     inputStrCategoryName: str = ""
 
-    dbitems: list[DBBookmarkCategoryListItem] = []
+    dbitems: list[DBBookmarkCategoryListItems] = []
     dbitemnum: int = 0
 
     listCategoryItems: list[str] = []
