@@ -119,6 +119,9 @@ def add_category_item(
     text_hash: int,
     category_name: str,
 ) -> tuple[bool, str]:
+    # Validation
+    if not category_name:
+        return False, "Category name is required."
 
     # Get current datetime in JST
     now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")

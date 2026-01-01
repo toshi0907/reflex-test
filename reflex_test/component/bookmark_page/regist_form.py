@@ -1,7 +1,10 @@
 """bookmark登録フォームコンポーネント"""
 
 import reflex as rx
-from reflex_test.states import StateBookmark
+from reflex_test.states import (
+    StateBookmark,
+    StateBookmarkCategory,
+)
 
 
 def bookmark_page_regist_item() -> rx.Component:
@@ -45,10 +48,7 @@ def bookmark_page_regist_item() -> rx.Component:
             ),
             rx.cond(
                 StateBookmark.isErrorMessageVisible,
-                rx.text(
-                    StateBookmark.textErrorMessage,
-                    color="red",
-                ),
+                rx.text(StateBookmark.textErrorMessage, color="red"),
             ),
             minwidth="300px",
             width="100%",
@@ -62,10 +62,19 @@ def bookmark_category_regist_item() -> rx.Component:
         rx.vstack(
             rx.heading("Add Category", as_="h2"),
             rx.input(
+                value=StateBookmarkCategory.inputStrCategoryName,
                 placeholder="CategoryName",
                 minwidth="300px",
                 width="100%",
+                on_change=StateBookmarkCategory.update_inputStrCategoryName,  # type: ignore
             ),
-            rx.button("Regist"),
+            rx.button(
+                "Regist",
+                on_click=StateBookmarkCategory.add_category_item(),  # type: ignore
+            ),
+            rx.cond(
+                StateBookmarkCategory.isErrorMessageVisible,
+                rx.text(StateBookmarkCategory.textErrorMessage, color="red"),
+            ),
         ),
     )  # type: ignore[reportReturnType]
