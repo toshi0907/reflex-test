@@ -1,6 +1,9 @@
 """States package"""
 
 from .todo import StateTodo
-from .bookmark import StateBookmark
+from .bookmark import (
+    StateBookmark,
+    StateBookmarkCategory,
+)
 
-__all__ = ["StateTodo", "StateBookmark"]
+__all__ = ["StateTodo", "StateBookmark", "StateBookmarkCategory"]
