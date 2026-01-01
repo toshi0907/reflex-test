@@ -2,8 +2,8 @@
 
 from .todo import DBTodoListItem
 from .bookmark import (
-    DBBookmarkListItem,
-    DBBookmarkCategoryListItem,
+    DBBookmarkListItems,
+    DBBookmarkCategoryListItems,
 )
 
-__all__ = ["DBTodoListItem", "DBBookmarkListItem", "DBBookmarkCategoryListItem"]
+__all__ = ["DBTodoListItem", "DBBookmarkListItems", "DBBookmarkCategoryListItems"]

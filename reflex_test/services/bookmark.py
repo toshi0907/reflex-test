@@ -2,25 +2,25 @@
 
 import reflex as rx
 from reflex_test.models import (
-    DBBookmarkListItem,
-    DBBookmarkCategoryListItem,
+    DBBookmarkListItems,
+    DBBookmarkCategoryListItems,
 )
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 
-def get_bookmark_items() -> tuple[list[DBBookmarkListItem], int]:
+def get_bookmark_items() -> tuple[list[DBBookmarkListItems], int]:
     with rx.session() as session:
         items = session.exec(
-            DBBookmarkListItem.select().where(DBBookmarkListItem.removed == False)
+            DBBookmarkListItems.select().where(DBBookmarkListItems.removed == False)
         ).all()
         count = len(items)
     return items, count
 
 
-def get_todo_item_all(hash: int) -> DBBookmarkListItem | None:
+def get_todo_item_all(hash: int) -> DBBookmarkListItems | None:
     with rx.session() as session:
-        item = session.exec(DBBookmarkListItem.select()).all()
+        item = session.exec(DBBookmarkListItems.select()).all()
     return item
 
 
@@ -47,8 +47,8 @@ def add_bookmark_item(
             if text_hash != 0:
                 # Update existing item
                 item_bookmarks = session.exec(
-                    DBBookmarkListItem.select().where(
-                        DBBookmarkListItem.id == text_hash
+                    DBBookmarkListItems.select().where(
+                        DBBookmarkListItems.id == text_hash
                     )
                 ).all()
 
@@ -63,7 +63,7 @@ def add_bookmark_item(
                 session.commit()
             else:
                 # Create new item
-                new_item = DBBookmarkListItem(
+                new_item = DBBookmarkListItems(
                     hash=0,
                     create_at=now,
                     update_at=now,
@@ -84,7 +84,7 @@ def remove_bookmark_item(item_id: str) -> tuple[bool, str]:
     try:
         with rx.session() as session:
             item_bookmarks = session.exec(
-                DBBookmarkListItem.select().where(DBBookmarkListItem.id == item_id)
+                DBBookmarkListItems.select().where(DBBookmarkListItems.id == item_id)
             ).all()
 
             for item_bookmark in item_bookmarks:
@@ -98,20 +98,20 @@ def remove_bookmark_item(item_id: str) -> tuple[bool, str]:
         return False, f"Error removing bookmark item: {str(e)}"
 
 
-def get_category_items() -> tuple[list[DBBookmarkCategoryListItem], int]:
+def get_category_items() -> tuple[list[DBBookmarkCategoryListItems], int]:
     with rx.session() as session:
         items = session.exec(
-            DBBookmarkCategoryListItem.select().where(
-                DBBookmarkCategoryListItem.removed == False
+            DBBookmarkCategoryListItems.select().where(
+                DBBookmarkCategoryListItems.removed == False
             )
         ).all()
         count = len(items)
     return items, count
 
 
-def get_category_item_all(hash: int) -> DBBookmarkCategoryListItem | None:
+def get_category_item_all(hash: int) -> DBBookmarkCategoryListItems | None:
     with rx.session() as session:
-        item = session.exec(DBBookmarkCategoryListItem.select()).all()
+        item = session.exec(DBBookmarkCategoryListItems.select()).all()
     return item
 
 
@@ -126,9 +126,9 @@ def add_category_item(
     # カテゴリ名の重複確認
     with rx.session() as session:
         existing_items = session.exec(
-            DBBookmarkCategoryListItem.select().where(
-                DBBookmarkCategoryListItem.category_name == category_name,
-                DBBookmarkCategoryListItem.removed == False,
+            DBBookmarkCategoryListItems.select().where(
+                DBBookmarkCategoryListItems.category_name == category_name,
+                DBBookmarkCategoryListItems.removed == False,
             )
         ).all()
         if existing_items:
@@ -142,8 +142,8 @@ def add_category_item(
             if text_hash != 0:
                 # Update existing item
                 item_categorys = session.exec(
-                    DBBookmarkCategoryListItem.select().where(
-                        DBBookmarkCategoryListItem.id == text_hash
+                    DBBookmarkCategoryListItems.select().where(
+                        DBBookmarkCategoryListItems.id == text_hash
                     )
                 ).all()
 
@@ -155,7 +155,7 @@ def add_category_item(
                 session.commit()
             else:
                 # Create new item
-                new_item = DBBookmarkCategoryListItem(
+                new_item = DBBookmarkCategoryListItems(
                     create_at=now,
                     update_at=now,
                     category_name=category_name,
@@ -172,8 +172,8 @@ def remove_category_item(item_id: str) -> tuple[bool, str]:
     try:
         with rx.session() as session:
             item_categorys = session.exec(
-                DBBookmarkCategoryListItem.select().where(
-                    DBBookmarkCategoryListItem.id == item_id
+                DBBookmarkCategoryListItems.select().where(
+                    DBBookmarkCategoryListItems.id == item_id
                 )
             ).all()
 
