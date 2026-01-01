@@ -75,6 +75,17 @@ class StateBookmark(rx.State):
         self.dbitems, self.dbitemnum = service_get_bookmark_items()
         self.dbitemsCategory, self.dbitemnumCategory = service_get_category_items()
 
+        # dbitemsをcategory_id順にソート
+        self.dbitems.sort(key=lambda x: x.category_id)
+
+        # dbitemsCategoryをcategory_name順にソート
+        self.dbitemsCategory.sort(key=lambda x: x.category_name)
+
+        # dbitemsCategoryに未分類カテゴリを追加
+        self.dbitemsCategory.append(
+            DBBookmarkCategoryListItems(id=0, category_name="未分類")  # type: ignore
+        )
+
     def add_bookmark_item(self):
         print("add_bookmark_item")
 
