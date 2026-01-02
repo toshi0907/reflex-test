@@ -24,7 +24,6 @@ class StateBookmark(rx.State):
     inputStrURL: str = ""
     inputStrDescription: str = ""
 
-    selectCategoryItems: list[str] = ["item1", "item2", "item3"]
     selectStrCategoryItem: str = ""
     inputCategoryID: int = 0
 
@@ -117,11 +116,16 @@ class StateBookmark(rx.State):
 
     def update_item(self, item: DBBookmarkListItems):
         print("update_item")
+        print("item:", item)
         self.textHash = item.id  # type: ignore
         self.inputStrTitle = item.title
         self.inputStrURL = item.url
         self.inputStrDescription = item.description
         self.inputCategoryID = item.category_id
+        self.selectStrCategoryItem = "" # TODO :カテゴリidからカテゴリ名を取得
+        for item in self.dbitemsCategory: # type: ignore
+            if self.inputCategoryID == item.id:
+                self.selectStrCategoryItem = item.category_name  # type: ignore
 
     def clear_inputs(self):
         self.textHash = 0
@@ -170,7 +174,9 @@ class StateBookmarkCategory(rx.State):
                 # print(f"category_item: {item.category_name}")
                 self.listCategoryItems.append(item.category_name)
         self.has_category_items = True
-        pass
+
+        # dbitemsCategoryに未分類カテゴリを追加
+        self.listCategoryItems.append("=== 未分類 ===")
 
     def add_category_item(self):
         print("add_category_item")

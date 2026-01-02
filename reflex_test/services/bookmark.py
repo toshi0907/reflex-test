@@ -82,6 +82,7 @@ def add_bookmark_item(
 
 def remove_bookmark_item(item_id: str) -> tuple[bool, str]:
     try:
+        print(item_id)
         with rx.session() as session:
             item_bookmarks = session.exec(
                 DBBookmarkListItems.select().where(DBBookmarkListItems.id == item_id)
