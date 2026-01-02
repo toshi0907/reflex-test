@@ -14,7 +14,7 @@ def bookmark_page_regist_item() -> rx.Component:
             rx.heading("Add Bookmark", as_="h2"),
             rx.text(f"ID[{StateBookmark.textHash}]"),
             rx.input(
-                placeholder="Title",
+                placeholder=StateBookmark.inputStrTitleAuto,
                 value=StateBookmark.inputStrTitle,
                 on_change=StateBookmark.update_inputStrTitle,  # type: ignore
                 minwidth="300px",

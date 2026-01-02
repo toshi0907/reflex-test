@@ -12,6 +12,7 @@ from reflex_test.services.bookmark import (
     get_category_items as service_get_category_items,
     add_category_item as service_add_category_item,
     remove_category_item as service_remove_category_item,
+    get_page_title as service_get_page_title,
 )
 
 
@@ -21,6 +22,7 @@ class StateBookmark(rx.State):
     textHash: int = 0
 
     inputStrTitle: str = ""
+    inputStrTitleAuto: str = ""
     inputStrURL: str = ""
     inputStrDescription: str = ""
 
@@ -50,6 +52,11 @@ class StateBookmark(rx.State):
         # URLの先頭にhttp://またはhttps://がない場合、エラーメッセージを表示
         if not (value.startswith("http://") or value.startswith("https://")):
             self.update_textErrorMessage("URL must start with http:// or https://.")
+            return
+        else:
+            self.isErrorMessageVisible = False
+
+        self.inputStrTitleAuto = service_get_page_title(self.inputStrURL)
 
     def update_inputStrDescription(self, value: str):
         print(f"update_inputStrDescription : {value}")
@@ -88,10 +95,14 @@ class StateBookmark(rx.State):
     def add_bookmark_item(self):
         print("add_bookmark_item")
 
+        title_regist = self.inputStrTitle
+        if title_regist == "":
+            title_regist = self.inputStrTitleAuto
+
         # Service層の関数を呼び出す
         success, error_message = service_add_bookmark_item(
             text_hash=self.textHash,
-            title=self.inputStrTitle,
+            title=title_regist,
             url=self.inputStrURL,
             description=self.inputStrDescription,
             category_id=self.inputCategoryID,
@@ -122,14 +133,15 @@ class StateBookmark(rx.State):
         self.inputStrURL = item.url
         self.inputStrDescription = item.description
         self.inputCategoryID = item.category_id
-        self.selectStrCategoryItem = "" # TODO :カテゴリidからカテゴリ名を取得
-        for item in self.dbitemsCategory: # type: ignore
+        self.selectStrCategoryItem = ""  # TODO :カテゴリidからカテゴリ名を取得
+        for item in self.dbitemsCategory:  # type: ignore
             if self.inputCategoryID == item.id:
                 self.selectStrCategoryItem = item.category_name  # type: ignore
 
     def clear_inputs(self):
         self.textHash = 0
         self.inputStrTitle = ""
+        self.inputStrTitleAuto = ""
         self.inputStrURL = ""
         self.inputStrDescription = ""
         self.selectStrCategoryItem = ""

@@ -8,6 +8,9 @@ from reflex_test.models import (
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+import requests
+from bs4 import BeautifulSoup
+
 
 def get_bookmark_items() -> tuple[list[DBBookmarkListItems], int]:
     with rx.session() as session:
@@ -187,3 +190,27 @@ def remove_category_item(item_id: str) -> tuple[bool, str]:
         return True, ""
     except Exception as e:
         return False, f"Error removing category item: {str(e)}"
+
+
+def get_page_title(url):
+    try:
+        # ページの内容を取得（タイムアウトを5秒に設定）
+        response = requests.get(url, timeout=5)
+
+        # ステータスコードが200（成功）か確認
+        response.raise_for_status()
+
+        # 文字化け防止のためエンコーディングを設定
+        response.encoding = response.apparent_encoding
+
+        # BeautifulSoupでHTMLを解析
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # <title>タグを取得
+        title = soup.title.string if soup.title else ""
+
+        return title.strip()
+
+    except requests.exceptions.RequestException as e:
+        return ""
+        # return f"エラーが発生しました: {e}"
