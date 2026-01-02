@@ -82,6 +82,7 @@ class StateBookmark(rx.State):
         self.dbitemsCategory, self.dbitemnumCategory = service_get_category_items()
 
         # dbitemsをcategory_id順にソート
+        self.dbitems.sort(key=lambda x: x.title)
         self.dbitems.sort(key=lambda x: x.category_id)
 
         # dbitemsCategoryをcategory_name順にソート
