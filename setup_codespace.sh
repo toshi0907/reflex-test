@@ -19,6 +19,10 @@ pip install -r requirements.txt
 echo "Initializing Reflex..."
 reflex init
 
+pkill -f reflex || true
+
 echo "Setup complete!"
+
+reflex run
 
 # end of file

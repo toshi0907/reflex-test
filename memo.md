@@ -27,3 +27,17 @@ https://reflex.dev/docs/library/
 ```bash
 pip freeze > requirements.txt
 ```
+
+# API curl
+
+```bash
+curl localhost:8000/api/bookmark/list
+curl localhost:8000/api/todo/list
+curl localhost:8000/api/bookmark/category/list
+```
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"name":"apitest"}' localhost:8000/api/bookmark/category/add
+curl -X POST -H "Content-Type: application/json" -d '{"id":0, "title":"api1", "url":"http://abc.com", "description": "", "category_id":0}' localhost:8000/api/bookmark/add
+curl -X POST -H "Content-Type: application/json" -d '{"id":0, "title":"api1", "url":"http://abc.com", "description": "", "category_id":0}' localhost:8000/api/todo/add
+```

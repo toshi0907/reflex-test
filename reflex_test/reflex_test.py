@@ -2,7 +2,6 @@
 
 import reflex as rx
 from sqlalchemy import create_engine, inspect
-import asyncio
 
 from rxconfig import config
 from reflex_test.pages import (
@@ -15,13 +14,14 @@ from reflex_test.states import (
     StateBookmark,
     StateBookmarkCategory,
 )
+from reflex_test.api import create_api_app
 
 
 # データベース初期化
 def _init_db():
     """アプリケーション起動時にデータベーステーブルを初期化"""
     try:
-        engine = create_engine(config.db_url) # type: ignore
+        engine = create_engine(config.db_url)  # type: ignore
         inspector = inspect(engine)
 
         # テーブルが存在しない場合は作成
@@ -37,7 +37,13 @@ def _init_db():
         print(f"Database initialization error: {e}")
 
 
-app = rx.App()
+# Create a FastAPI app
+fastapi_app = create_api_app()
+
+app = rx.App(
+    api_transformer=fastapi_app,
+    theme=rx.theme(accent_color="sky"),
+)
 app.add_page(
     index,
     title="TNApp : TopPage",
