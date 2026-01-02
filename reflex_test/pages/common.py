@@ -13,9 +13,9 @@ def CommonHeader(title: str) -> rx.Component:
     return rx.vstack(
         rx.heading(title_disp, as_="h1"),
         rx.hstack(
-            rx.link("Top", href="/"),
-            rx.link("Todo", href="/todo_page"),
-            rx.link("Bookmark", href="/bookmark_page"),
+            rx.badge(rx.link("Top", href="/")),
+            rx.badge(rx.link("Todo", href="/todo_page")),
+            rx.badge(rx.link("Bookmark", href="/bookmark_page")),
         ),
         rx.divider(),
         rx.spacer(height="20px"),
