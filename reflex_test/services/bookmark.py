@@ -23,7 +23,7 @@ def get_bookmark_items() -> tuple[list[DBBookmarkListItems], int]:
     return items, count
 
 
-def get_todo_item_all(hash: int) -> DBBookmarkListItems | None:
+def get_bookmark_item_all(hash: int) -> DBBookmarkListItems | None:
     with rx.session() as session:
         item = session.exec(DBBookmarkListItems.select()).all()
     return item
