@@ -11,6 +11,8 @@ from zoneinfo import ZoneInfo
 import requests
 from bs4 import BeautifulSoup
 
+from urllib.parse import urlparse
+
 
 def get_bookmark_items() -> tuple[list[DBBookmarkListItems], int]:
     with rx.session() as session:
@@ -214,3 +216,8 @@ def get_page_title(url):
     except requests.exceptions.RequestException as e:
         return ""
         # return f"エラーが発生しました: {e}"
+
+
+def get_favicon_by_google(url):
+    domain = urlparse(url).netloc
+    return f"https://www.google.com/s2/favicons?domain={domain}&sz=64"
