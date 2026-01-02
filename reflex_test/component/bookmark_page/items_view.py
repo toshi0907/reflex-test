@@ -23,9 +23,10 @@ def bookmark_page_view_items() -> rx.Component:
                             rx.vstack(
                                 rx.hstack(
                                     rx.link(
-                                        f"・{item.category_id} : {item.title}",
+                                        f"・{item.title}",
                                         href=item.url,
                                         is_external=True,
+                                        color="#000000",
                                     ),
                                 ),
                                 rx.cond(
@@ -46,7 +47,9 @@ def bookmark_page_view_items() -> rx.Component:
             ),
             collapsible=True,
             type="single",
-            color_scheme="gray",
+            color_scheme="sky",
+            width="100%",
+            minwidth="300px",
         ),
         width="100%",
         minwidth="300px",
