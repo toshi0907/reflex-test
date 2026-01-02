@@ -22,8 +22,13 @@ def bookmark_page_view_items() -> rx.Component:
                             item_cate.id == item.category_id,
                             rx.vstack(
                                 rx.hstack(
+                                    rx.image(
+                                        src=f"https://www.google.com/s2/favicons?domain={item.url}&sz=20",
+                                        alt="Favicon",
+                                        box_size="16px",
+                                    ),
                                     rx.link(
-                                        f"・{item.title}",
+                                        f"{item.title}",
                                         href=item.url,
                                         is_external=True,
                                         style={
@@ -35,6 +40,7 @@ def bookmark_page_view_items() -> rx.Component:
                                         on_click=lambda: StateBookmark.update_item(
                                             item
                                         ),  # type: ignore
+                                        background_color="gray",
                                     ),
                                     width="100%",
                                     minwidth="300px",
@@ -48,6 +54,7 @@ def bookmark_page_view_items() -> rx.Component:
                                     ),
                                     None,
                                 ),
+                                padding="14px",
                             ),
                             None,
                         ),
