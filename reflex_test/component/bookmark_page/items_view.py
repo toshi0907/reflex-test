@@ -26,15 +26,25 @@ def bookmark_page_view_items() -> rx.Component:
                                         f"・{item.title}",
                                         href=item.url,
                                         is_external=True,
-                                        color="#000000",
+                                        style={
+                                            "color": "white",
+                                        },
                                     ),
+                                    rx.button(
+                                        "Edit",
+                                        on_click=lambda: StateBookmark.update_item(
+                                            item
+                                        ),  # type: ignore
+                                    ),
+                                    width="100%",
+                                    minwidth="300px",
                                 ),
                                 rx.cond(
                                     (item.description != "")
                                     & (item.description is not None),
                                     rx.foreach(
                                         item.description.split("\n"),
-                                        lambda line: rx.text(f"des:{line}"),
+                                        lambda line: rx.text(f"{line}"),
                                     ),
                                     None,
                                 ),
@@ -47,7 +57,6 @@ def bookmark_page_view_items() -> rx.Component:
             ),
             collapsible=True,
             type="single",
-            color_scheme="sky",
             width="100%",
             minwidth="300px",
         ),
