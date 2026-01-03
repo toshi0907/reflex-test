@@ -12,8 +12,10 @@ def CommonHeader(title: str) -> rx.Component:
     """共通ヘッダ"""
     title_disp = ""
     title_debug = ""
+    title_theme = "sky"
     if os.getenv("TN_DEBUG") == "True":
         title_debug = "[DEBUG] "
+        title_theme = "red"
     if title == "":
         title_disp = title_debug + "TN App"
     else:
@@ -23,7 +25,7 @@ def CommonHeader(title: str) -> rx.Component:
             title_disp,
             trim="both",
             as_="h1",
-            color_scheme="red",
+            color_scheme=title_theme,
         ),
         rx.hstack(
             rx.badge(rx.link("Top", href="/")),
