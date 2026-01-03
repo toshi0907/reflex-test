@@ -1,4 +1,5 @@
 alembic==1.17.2
+annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.12.0
 APScheduler==3.10.4
@@ -7,6 +8,7 @@ bidict==0.23.1
 certifi==2025.11.12
 charset-normalizer==3.4.4
 click==8.3.1
+fastapi==0.128.0
 granian==2.6.0
 greenlet==3.3.0
 h11==0.16.0
