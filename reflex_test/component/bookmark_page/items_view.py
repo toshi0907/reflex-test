@@ -31,9 +31,6 @@ def bookmark_page_view_items() -> rx.Component:
                                         f"{item.title}",
                                         href=item.url,
                                         is_external=True,
-                                        style={
-                                            "color": "white",
-                                        },
                                     ),
                                     rx.button(
                                         "Edit",
