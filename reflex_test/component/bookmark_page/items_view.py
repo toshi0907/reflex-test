@@ -21,22 +21,29 @@ def bookmark_page_view_items() -> rx.Component:
                         lambda item: rx.cond(
                             item_cate.id == item.category_id,
                             rx.vstack(
-                                rx.hstack(
-                                    rx.image(
-                                        src=f"https://www.google.com/s2/favicons?domain={item.url}&sz=20",
-                                        alt="Favicon",
-                                        box_size="16px",
-                                    ),
-                                    rx.link(
-                                        f"{item.title}",
-                                        href=item.url,
-                                        is_external=True,
+                                rx.flex(
+                                    rx.flex(
+                                        rx.image(
+                                            src=f"https://www.google.com/s2/favicons?domain={item.url}&sz=20",
+                                            alt="Favicon",
+                                            box_size="16px",
+                                            width="20px",
+                                            height="20px",
+                                        ),
+                                        rx.link(
+                                            f"{item.title}",
+                                            href=item.url,
+                                            is_external=True,
+                                            padding_left="8px",
+                                        ),
+                                        width="90%",
                                     ),
                                     rx.button(
                                         "Edit",
                                         on_click=lambda: StateBookmark.update_item(
                                             item
                                         ),  # type: ignore
+                                        width="10%",
                                     ),
                                     width="100%",
                                     minwidth="300px",
