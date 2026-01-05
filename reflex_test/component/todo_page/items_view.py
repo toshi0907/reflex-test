@@ -17,31 +17,35 @@ def todo_page_view_items() -> rx.Component:
                     rx.text.strong(
                         f"・{item.title}",
                         on_click=lambda: StateTodo.update_item(item),
+                        width="50%",
                     ),
-                    rx.cond(
-                        item.datetime != "",
-                        rx.hstack(
-                            rx.text("【"),
-                            rx.text(f"{item.datetime}"),
-                            rx.text("/"),
-                            rx.cond(item.notify_webhook, rx.text("🔗"), None),
-                            rx.cond(item.notify_email, rx.text("✉"), None),
-                            rx.text("/"),
-                            rx.cond(item.repeat_daily, rx.text("①"), None),
-                            rx.cond(item.repeat_weekly, rx.text("⑦"), None),
-                            rx.cond(item.repeat_monthly, rx.text("㉚"), None),
-                            rx.cond(
-                                (~item.repeat_daily)
-                                & (~item.repeat_weekly)
-                                & (~item.repeat_monthly),
-                                rx.text("Once"),
-                                None,
+                    rx.flex(
+                        rx.cond(
+                            item.datetime != "",
+                            rx.hstack(
+                                rx.text("【"),
+                                rx.text(f"{item.datetime}"),
+                                rx.text("/"),
+                                rx.cond(item.notify_webhook, rx.text("🔗"), None),
+                                rx.cond(item.notify_email, rx.text("✉"), None),
+                                rx.text("/"),
+                                rx.cond(item.repeat_daily, rx.text("①"), None),
+                                rx.cond(item.repeat_weekly, rx.text("⑦"), None),
+                                rx.cond(item.repeat_monthly, rx.text("㉚"), None),
+                                rx.cond(
+                                    (~item.repeat_daily)
+                                    & (~item.repeat_weekly)
+                                    & (~item.repeat_monthly),
+                                    rx.text("Once"),
+                                    None,
+                                ),
+                                rx.text("】"),
                             ),
-                            rx.text("】"),
-                            margin_left="15px",
+                            rx.text("【---】"),
                         ),
-                        rx.text("【---】"),
+                        width="50%",
                     ),
+                    width="100%",
                 ),
                 rx.cond(
                     item.url != "",
