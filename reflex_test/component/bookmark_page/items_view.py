@@ -37,7 +37,6 @@ def bookmark_page_view_items() -> rx.Component:
                                         on_click=lambda: StateBookmark.update_item(
                                             item
                                         ),  # type: ignore
-                                        background_color="gray",
                                     ),
                                     width="100%",
                                     minwidth="300px",
@@ -63,6 +62,7 @@ def bookmark_page_view_items() -> rx.Component:
             type="single",
             width="100%",
             minwidth="300px",
+            variant="ghost",  # variantをghostにすると、もともと背景がほぼ透明になります
         ),
         width="100%",
         minwidth="300px",
