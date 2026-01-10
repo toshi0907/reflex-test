@@ -19,10 +19,15 @@ pip install -r requirements.txt
 echo "Initializing Reflex..."
 reflex init
 
+echo "Makeing data directory..."
+mkdir data || true
+
+echo "Killing any existing reflex processes..."
 pkill -f reflex || true
 
 echo "Setup complete!"
 
+echo "Start the development server"
 reflex run
 
 # end of file
