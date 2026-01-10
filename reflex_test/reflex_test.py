@@ -42,7 +42,7 @@ fastapi_app = create_api_app()
 
 # Global styles
 style_app = {
-    "font_family": "Comic Sans MS",
+    "font_family": "BIZ UDPGothic",
 }
 
 app = rx.App(
