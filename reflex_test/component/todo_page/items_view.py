@@ -24,7 +24,8 @@ def todo_page_view_items() -> rx.Component:
                             item.datetime != "",
                             rx.hstack(
                                 rx.text("【"),
-                                rx.text(f"{item.datetime}"),
+                                rx.text(f"{item.datetime[5:16].replace('T', ' ')}"),
+                                # rx.text(f"{item.datetime}"),
                                 rx.text("/"),
                                 rx.cond(item.notify_webhook, rx.text("🔗"), None),
                                 rx.cond(item.notify_email, rx.text("✉"), None),
