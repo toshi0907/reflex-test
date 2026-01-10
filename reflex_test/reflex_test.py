@@ -40,9 +40,15 @@ def _init_db():
 # Create a FastAPI app
 fastapi_app = create_api_app()
 
+# Global styles
+style_app = {
+    "font_family": "Comic Sans MS",
+}
+
 app = rx.App(
     api_transformer=fastapi_app,
     theme=rx.theme(accent_color="sky"),
+    style=style_app,
 )
 app.add_page(
     index,
