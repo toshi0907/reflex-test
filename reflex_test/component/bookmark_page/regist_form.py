@@ -45,9 +45,16 @@ def bookmark_page_regist_item() -> rx.Component:
                     width="100%",
                 ),
             ),
-            rx.button(
-                "Regist",
-                on_click=lambda: StateBookmark.add_bookmark_item(),  # type: ignore
+            rx.flex(
+                rx.button(
+                    "Regist",
+                    on_click=lambda: StateBookmark.add_bookmark_item(),  # type: ignore
+                ),
+                rx.spacer(width="10px"),
+                rx.button(
+                    "Delete",
+                    on_click=lambda: StateBookmark.remove_bookmark_item(),  # type: ignore
+                ),
             ),
             rx.cond(
                 StateBookmark.isErrorMessageVisible,

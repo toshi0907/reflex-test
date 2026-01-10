@@ -116,9 +116,9 @@ class StateBookmark(rx.State):
         self.clear_inputs()
         self.get_bookmark_item()
 
-    def remove_bookmark_item(self, item_id: str):
+    def remove_bookmark_item(self):
         print("remove_bookmark_item")
-        success, error_message = service_remove_bookmark_item(item_id)
+        success, error_message = service_remove_bookmark_item(str(self.textHash))
 
         if not success:
             self.update_textErrorMessage(error_message)
