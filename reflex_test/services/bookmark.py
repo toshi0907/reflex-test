@@ -44,6 +44,12 @@ def add_bookmark_item(
     if not (url.startswith("http://") or url.startswith("https://")) and url != "":
         return False, "URL must start with http:// or https://."
 
+    if title == "":
+        # タイトルが空の場合、URLからタイトルを取得
+        title = get_page_title(url)
+        if title == "":
+            title = url  # タイトルが取得できない場合はURLをタイトルにする
+
     # Get current datetime in JST
     now = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M:%S")
 
