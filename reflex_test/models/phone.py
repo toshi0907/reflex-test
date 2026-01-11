@@ -10,11 +10,10 @@ class DBPhoneInfoItems(rx.Model, table=True):
     create_at: str
 
     ### 位置情報
-    latitude: Optional[float]  # 緯度
-    longitude: Optional[float]  # 経度
+    latitude: Optional[float] = None  # 緯度
+    longitude: Optional[float] = None  # 経度
 
     ### バッテリー情報
-    battery_level: Optional[float]  # バッテリー残量(0.0~1.0)
-
+    battery_level: Optional[float] = None  # バッテリー残量(0.0~1.0)
     ### ストレージ情報
-    free_storage: Optional[int]  # 空きストレージ容量(GB)
+    free_storage: Optional[int] = None  # 空きストレージ容量(GB)

@@ -6,10 +6,10 @@ from typing import Optional
 
 
 class APIPhoneInfoAdd(BaseModel):
-    latitude: Optional[float]
-    longitude: Optional[float]
-    battery_level: Optional[float]
-    free_storage: Optional[int]
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    battery_level: Optional[float] = None
+    free_storage: Optional[int] = None
 
 
 async def api_add_phone_info(body: APIPhoneInfoAdd):
@@ -21,4 +21,4 @@ async def api_add_phone_info(body: APIPhoneInfoAdd):
         body.free_storage or -1,
     )
 
-    return {success, message}
+    return {"success": success, "message": message}
