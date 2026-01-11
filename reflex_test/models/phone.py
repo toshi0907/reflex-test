@@ -4,7 +4,7 @@ import reflex as rx
 from typing import Optional
 
 
-class DBSmartPhoneInfoItems(rx.Model, table=True):
+class DBPhoneInfoItems(rx.Model, table=True):
     """データベースのテーブル定義 : スマホ情報"""
 
     create_at: str
