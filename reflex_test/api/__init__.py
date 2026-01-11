@@ -3,6 +3,7 @@
 from fastapi import FastAPI
 from reflex_test.api.bookmark import *
 from reflex_test.api.todo import *
+from reflex_test.api.phone import *
 
 
 def create_api_app() -> FastAPI:
@@ -30,5 +31,8 @@ def create_api_app() -> FastAPI:
     app.add_api_route(
         "/api/bookmark/category/add", api_add_category_item, methods=["POST"]
     )
+
+    ### /api/phone/add
+    app.add_api_route("/api/phone/add", api_add_phone_info, methods=["POST"])
 
     return app
