@@ -29,6 +29,7 @@ def _init_db():
             "dbtodolistitem" not in inspector.get_table_names()
             or "dbbookmarklistitem" not in inspector.get_table_names()
             or "dbbookmarkcategorylistitem" not in inspector.get_table_names()
+            or "dbphoneinfoitems" not in inspector.get_table_names()
         ):
             print("Creating DBTodoListItem table...")
             rx.Model.metadata.create_all(engine)
